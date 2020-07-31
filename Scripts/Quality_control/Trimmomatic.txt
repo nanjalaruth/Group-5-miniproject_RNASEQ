@@ -1,0 +1,7 @@
+mkdir -p Trimmed_Fastqc
+for sample in `cat sample_id.txt`
+do
+       trimmomatic PE -threads 20 ${sample}_R1.fastq.gz ${sample}_R2.fastq.gz ${sample}_R1_paired.fq.gz ${sample}_R1_unpaired.fq.gz ${sample}_R2_paired.fq.gz ${sample}_R2_unpaired.fq.gz ILLUMINACLIP:TruSeq3-PE.fa:2:30:10:2:keepBothReads LEADING:3 TRAILING:3 SLIDINGWINDOW:4:25 MINLEN:20
+      fastqc  ${sample}_R1_paired.fq.gz  ${sample}_R2_paired.fq.gz  -o Trimmed_Fastqc
+done 
+multiqc  Trimmed_Fastqc  -o Trimmed_Fastqc

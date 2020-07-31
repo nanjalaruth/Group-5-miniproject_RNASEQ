@@ -1,0 +1,8 @@
+mkdir -p FastqQC_Reports
+for sample in `cat sample_id.txt`
+do
+        echo $sample
+       fastqc data/${sample}_R1.fastq.gz data/${sample}_R2.fastq.gz --outdir FastqQC_Reports
+done
+multiqc FastqQC_Reports -o  FastqQC_Reports
+

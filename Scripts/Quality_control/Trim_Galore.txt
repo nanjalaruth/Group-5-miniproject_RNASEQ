@@ -1,0 +1,6 @@
+for sample in `cat sample_id.txt`
+do
+        echo $sample
+       trim_galore -j 10 --paired data/${sample}_R1.fastq.gz data/${sample}_R2.fastq.gz -q 25 --length 20 --fastqc -o Trim_galore
+done 
+multiqc Trim_galore -o Trim_galore
