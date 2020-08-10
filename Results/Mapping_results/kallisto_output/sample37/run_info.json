@@ -1,0 +1,13 @@
+{
+	"n_targets": 228048,
+	"n_bootstraps": 0,
+	"n_processed": 8023505,
+	"n_pseudoaligned": 6481122,
+	"n_unique": 3279213,
+	"p_pseudoaligned": 80.8,
+	"p_unique": 40.9,
+	"kallisto_version": "0.46.2",
+	"index_version": 10,
+	"start_time": "Wed Aug  5 13:52:37 2020",
+	"call": "kallisto quant -t 8 -i kallindex/kallisto_index -o kallisto_output/sample37 ../trimmed_reads/sample37_R1_paired.fq ../trimmed_reads/sample37_R2_paired.fq"
+}

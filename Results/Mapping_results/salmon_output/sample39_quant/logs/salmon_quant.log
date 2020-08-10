@@ -1,0 +1,53 @@
+[2020-08-07 16:31:29.523] [jointLog] [info] setting maxHashResizeThreads to 8
+[2020-08-07 16:31:29.523] [jointLog] [info] Fragment incompatibility prior below threshold.  Incompatible fragments will be ignored.
+[2020-08-07 16:31:29.523] [jointLog] [info] Usage of --validateMappings implies use of minScoreFraction. Since not explicitly specified, it is being set to 0.65
+[2020-08-07 16:31:29.523] [jointLog] [info] Usage of --validateMappings implies a default consensus slack of 0.2. Setting consensusSlack to 0.35.
+[2020-08-07 16:31:29.523] [jointLog] [info] parsing read library format
+[2020-08-07 16:31:29.523] [jointLog] [info] There is 1 library.
+[2020-08-07 16:31:29.643] [jointLog] [info] Loading pufferfish index
+[2020-08-07 16:31:29.644] [jointLog] [info] Loading dense pufferfish index.
+[2020-08-07 16:31:31.685] [jointLog] [info] done
+[2020-08-07 16:31:31.686] [jointLog] [info] Index contained 227,201 targets
+[2020-08-07 16:31:31.863] [jointLog] [info] Number of decoys : 0
+[2020-08-07 16:31:32.439] [jointLog] [info] Automatically detected most likely library type as IU
+[2020-08-07 16:33:06.001] [fileLog] [info] 
+At end of round 0
+==================
+Observed 17284178 total fragments (17284178 in most recent round)
+
+[2020-08-07 16:33:06.000] [jointLog] [info] Computed 436,841 rich equivalence classes for further processing
+[2020-08-07 16:33:06.000] [jointLog] [info] Counted 14,968,311 total reads in the equivalence classes 
+[2020-08-07 16:33:06.008] [jointLog] [warning] 0.641344% of fragments were shorter than the k used to build the index.
+If this fraction is too large, consider re-building the index with a smaller k.
+The minimum read size found was 20.
+
+
+[2020-08-07 16:33:06.008] [jointLog] [info] Number of mappings discarded because of alignment score : 6,236,005
+[2020-08-07 16:33:06.008] [jointLog] [info] Number of fragments entirely discarded because of alignment score : 571,275
+[2020-08-07 16:33:06.008] [jointLog] [info] Number of fragments discarded because they are best-mapped to decoys : 0
+[2020-08-07 16:33:06.008] [jointLog] [info] Number of fragments discarded because they have only dovetail (discordant) mappings to valid targets : 34,176
+[2020-08-07 16:33:06.008] [jointLog] [info] Mapping rate = 86.6012%
+
+[2020-08-07 16:33:06.008] [jointLog] [info] finished quantifyLibrary()
+[2020-08-07 16:33:06.008] [jointLog] [info] Starting optimizer
+[2020-08-07 16:33:06.274] [jointLog] [info] Marked 0 weighted equivalence classes as degenerate
+[2020-08-07 16:33:06.319] [jointLog] [info] iteration = 0 | max rel diff. = 4589.72
+[2020-08-07 16:33:10.679] [jointLog] [info] iteration = 100 | max rel diff. = 20.0051
+[2020-08-07 16:33:14.990] [jointLog] [info] iteration = 200 | max rel diff. = 20.6117
+[2020-08-07 16:33:19.336] [jointLog] [info] iteration = 300 | max rel diff. = 3.69514
+[2020-08-07 16:33:23.690] [jointLog] [info] iteration = 400 | max rel diff. = 10.1698
+[2020-08-07 16:33:28.049] [jointLog] [info] iteration = 500 | max rel diff. = 4.97574
+[2020-08-07 16:33:32.374] [jointLog] [info] iteration = 600 | max rel diff. = 5.3731
+[2020-08-07 16:33:36.701] [jointLog] [info] iteration = 700 | max rel diff. = 0.112106
+[2020-08-07 16:33:41.025] [jointLog] [info] iteration = 800 | max rel diff. = 0.278047
+[2020-08-07 16:33:45.363] [jointLog] [info] iteration = 900 | max rel diff. = 5.09169
+[2020-08-07 16:33:49.690] [jointLog] [info] iteration = 1,000 | max rel diff. = 3.10974
+[2020-08-07 16:33:54.031] [jointLog] [info] iteration = 1,100 | max rel diff. = 0.063002
+[2020-08-07 16:33:58.355] [jointLog] [info] iteration = 1,200 | max rel diff. = 0.146864
+[2020-08-07 16:34:02.696] [jointLog] [info] iteration = 1,300 | max rel diff. = 0.105282
+[2020-08-07 16:34:07.007] [jointLog] [info] iteration = 1,400 | max rel diff. = 0.0658438
+[2020-08-07 16:34:11.345] [jointLog] [info] iteration = 1,500 | max rel diff. = 0.0865518
+[2020-08-07 16:34:11.908] [jointLog] [info] iteration = 1,514 | max rel diff. = 0.00797511
+[2020-08-07 16:34:11.952] [jointLog] [info] Finished optimizer
+[2020-08-07 16:34:11.952] [jointLog] [info] writing output 
+
