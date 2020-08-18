@@ -1,0 +1,329 @@
+---
+title: "Differential Expression Analysis Using Deseq2"
+author: "Monica Mbabazi & Eric Kariuki - Star Output"
+date: "8/08/2020"
+output:
+  pdf_document: default
+  html_document: default
+---
+### Creating the DESeq2 object and annotating the metadata  
+This step uses the counts output generated from _STAR_ alignment in Bash.  
+
+```{r setup, include=TRUE}
+knitr::opts_chunk$set(echo = TRUE)
+
+#library(tidyverse)
+library(BiocManager)
+#BiocManager::install('DESeq2')
+library(kableExtra)#creating decent tables for HTML and PDF
+options(knitr.table.format = "latex")
+library(DESeq2)
+library(Rsubread)
+staroutput <- read.table(file = 'C:/Users/SecondFiddle/Desktop/qcrepo/RNAseq_miniproj/STAR_counts.txt', header = T, row.names = 1)
+#Remove unwanted columns
+staroutput <- staroutput[, -c(1:5)]
+head(staroutput)
+
+staroutput <- as.matrix(staroutput)
+
+#Reading in the metadata
+metadata <- read.table(file = 'C:/Users/SecondFiddle/Desktop/qcrepo/RNAseq_miniproj/metadata.tsv', sep = "\t", header = T)
+head(staroutput)
+#View(metadata)
+
+colnames(staroutput) <-metadata[, 1]
+  
+#Reading the data into Deseq
+Condition <- factor(c(rep("normal", 3), rep("disease", 3)))
+col.data <- data.frame(row.names = colnames(staroutput), Condition)
+#colnames(staroutput) <- gsub("STAR_Alignment.", "", colnames(staroutput), fixed = TRUE)
+#colnames(staroutput) <- gsub("_sorted.bam", "", colnames(staroutput), fixed = TRUE)
+#staroutput
+head(col.data)
+StarDeseq <-DESeqDataSetFromMatrix(countData = staroutput,
+                                   colData = col.data,
+                                   design = ~ Condition)
+#StarDeseq<- log2(staroutput + 1) # log-transform to make numbers on scale (+1 to avoid zeroes)
+#boxplot(StarDeseq)
+#estimateSizeFactors(StarDeseq, type = 'iterate')
+StarDeseq
+StarDeseq <- DESeq(StarDeseq)
+#res <- results(A)
+#write.table(x = staroutput, 'C:/Users/SecondFiddle/Desktop/qcrepo/RNAseq_miniproj/staroutput')
+
+res <- results(StarDeseq)
+
+head(res, tidy=TRUE) #A glimpse at the results table
+summary(res) #summary of the results
+
+#Sorting summary list by pvalue
+res <- res[order(res$padj),]
+head(res)
+
+#Volcano plot
+par(mfrow=c(1,1))
+# Make a basic volcano plot
+
+with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="Volcano plot", xlim=c(-3,3)))
+#For the adjusted p value
+# Add colored points: blue if padj<0.01, red if log2FC>1 and padj<0.05)
+
+with(subset(res, padj<.01 ), points(log2FoldChange, -log10(pvalue), pch=20, col="blue"))
+with(subset(res, padj<.01 & abs(log2FoldChange)>2), points(log2FoldChange, -log10(pvalue), pch=20, col="red"))
+
+
+#Changing the colors of the plots
+library(RColorBrewer)
+(mycols <- brewer.pal(8, "Dark2")[1:length(unique(Condition))])
+
+#Using the PlotCounts function to compare the normalized counts between treated and untreated groups
+
+par(mfrow=c(2,3))
+
+plotCounts(StarDeseq, gene="ENSG00000039537", intgroup="Condition")
+plotCounts(StarDeseq, gene="ENSG00000124237", intgroup="Condition")
+plotCounts(StarDeseq, gene="ENSG00000160401", intgroup="Condition")
+plotCounts(StarDeseq, gene="ENSG00000007908", intgroup="Condition")
+plotCounts(StarDeseq, gene="ENSG00000188817", intgroup="Condition")
+plotCounts(StarDeseq, gene="ENSG00000168658", intgroup="Condition")
+
+# Principal Component Analysis
+#The raw count data is first transformed using the vst function variance stabilizing transformation (vst).
+vst.data <- vst(StarDeseq, blind=FALSE)
+plotPCA(vst.data, intgroup="Condition")
+
+# Regularized log transformation for clustering/heatmaps, etc
+rlt <- rlogTransformation(StarDeseq)
+head(assay(rlt)) #Assay is a summarized experiment matrix like container with rows as features of interest and columns as samples.
+par(mfrow=c(1,1))
+hist(assay(rlt))
+
+#Plot dispersions
+par(mfrow=c(1,1))
+#png("qc-dispersions.png", 1000, 1000, pointsize=20)
+plotDispEsts(StarDeseq, main="Dispersion plot")
+
+```
+
+### __Blind Dispersion Estimation and Extracting Transformed Values__
+DESeq has two functions `vst` and `rlog` that have an argument _blind_ for whether the transformation should be blind to the sample information specified by the design formula. When blind equals TRUE (the default), the functions will re-estimate the dispersions using only an intercept. This setting should be used in order to compare samples in a manner wholly unbiased by the information about experimental groups.  
+However, when one expects that many or the majority of genes (rows) will have large differences in counts which are explainable by the experimental design, and one wants to transform the data for downstream analysis, blind dispersion is not an appropriate choice. This is because it will lead to large estimations of dispersion.  
+ The running times are shorter when using blind=FALSE and if the function DESeq has already been run, because then it is not necessary to re-estimate the dispersion values. The assay function is used to extract the matrix of normalized values.
+ 
+```{r, echo=TRUE}
+vsd <- vst(StarDeseq, blind=FALSE)
+rld <- rlog(StarDeseq, blind=FALSE)
+head(assay(vsd), 3)
+```
+
+```{r, echo=TRUE}
+
+# Sample distance heatmap
+sampleDists <- dist(t(assay(vsd)))
+library(pheatmap)
+library("RColorBrewer")
+sampleDistMatrix <- as.matrix(sampleDists)
+colnames(sampleDistMatrix) <- NULL
+colors <- colorRampPalette( rev(brewer.pal(9, "Blues")) )(255)
+pheatmap(sampleDistMatrix,
+         clustering_distance_rows=sampleDists,
+         clustering_distance_cols=sampleDists,
+         col=colors)
+
+```
+
+### __The Effects of Transformation on Variance__  
+The figure below plots the standard deviation of the transformed data, across samples, against the mean, using the shifted logarithm transformation, the regularized log transformation and the variance stabilizing transformation.  
+
+```{r, echo=TRUE}
+trans<- normTransform(StarDeseq)
+library("vsn")
+meanSdPlot(assay(trans))
+
+meanSdPlot(assay(vsd))
+meanSdPlot(assay(rld))
+```
+
+
+### __Sample clustering and visualization for data quality Assessment__  
+Removal of insufficiently good data forms the basis of data quality assessment in data analysis. For this reason, the count matrix generated is instructively looked at as a heatmap as shown below.  
+
+```{r, echo=TRUE}
+library("pheatmap")
+select <- order(rowMeans(counts(StarDeseq,normalized=TRUE)),
+                decreasing=TRUE)[1:20]
+df <- as.data.frame(colData(StarDeseq))
+pheatmap(assay(trans)[select,], cluster_rows=FALSE, show_rownames=FALSE,
+         cluster_cols=FALSE, annotation_col=df)
+
+```
+
+### __Dealing with outliers__  
+It is possible to have instances of very large counts that are apparently unrelated to the study, and are hence considered as outliers.  
+
+A lot of reasons lie behind getting outliers, such as experimental and technical errors, read mapping problems etc.  
+
+If there are many outliers it is normally advisable to further explore due to low quality. DESeq calculates, for every gene and for every sample, a diagnostic test for outliers called Cook’s distance. Cook’s distance is a measure of how much a single sample is influencing the fitted coefficients for a gene, and a large value of Cook’s distance is intended to indicate an outlier count. The Cook’s distances are stored as a matrix.
+
+```{r, echo=TRUE}
+#assays(StarDeseq)[["cooks"]]
+par(mar=c(8,5,2,2))
+boxplot(log10(assays(StarDeseq)[["cooks"]]), range=0, las=2)
+```
+### __Dispersion Plots and Fitting Alternatives__  
+
+Dispersion plots are a useful diagnostic tool for showing final estimates that are shrunk from genewise estimates towards the fitted estimates. However, ome gene-wise estimates are flagged as outliers and not shrunk towards the fitted value.  
+
+```{r, echo=TRUE}
+plotDispEsts(StarDeseq)
+```
+### __Independent filtering and multiple testing__  
+
+Independent filtering is used to filterout tests from the procedure that have no, or little chance of showing significant evidence without looking at their test statistic.  
+
+A good choice for a filtering criterion is one that;
+1.Is statistically independent from the test statistic under the null hypothesis,
+2.Is correlated with the test statistic under the alternative, and
+3.Does not notably change the dependence structure – if there is any – between the tests that pass the filter, compared to the dependence structure between the tests before filtering.
+
+The _p value_ histogram below shows how filtering makes the multiple testing strategy better.  
+
+```{r, echo=TRUE}
+use <- res$baseMean > metadata(res)$filterThreshold
+h1 <- hist(res$pvalue[!use], breaks=0:50/50, plot=FALSE)
+h2 <- hist(res$pvalue[use], breaks=0:50/50, plot=FALSE)
+colori <- c(`do not pass`="khaki", `pass`="powderblue")
+
+barplot(height = rbind(h1$counts, h2$counts), beside = FALSE,
+        col = colori, space = 0, main = "", ylab="frequency")
+text(x = c(0, length(h1$counts)), y = 0, label = paste(c(0,1)),
+     adj = c(0.5,1.7), xpd=NA)
+legend("topright", fill=rev(colori), legend=rev(names(colori)))
+```
+
+
+
+
+
+```{r, echo=TRUE}
+rlt_pca <- function (rlt, intgroup = "Condition", ntop = 500, colors=NULL, legendpos="bottomleft", main="PCA Biplot", textcx=1, ...) {
+require(genefilter)
+require(calibrate)
+require(RColorBrewer)
+r.v = rowVars(assay(rlt))
+select = order(r.v, decreasing = TRUE)[seq_len(min(ntop, length(r.v)))]
+pca = prcomp(t(assay(rlt)[select, ]))
+fac = factor(apply(as.data.frame(colData(rlt)[, intgroup, drop = FALSE]), 1, paste, collapse = " : "))
+if (is.null(colors)) {
+if (nlevels(fac) >= 3) {
+colors = brewer.pal(nlevels(fac), "Paired")
+} else {
+colors = c("black", "red")
+}
+}
+pc1var <- round(summary(pca)$importance[2,1]*100, digits=1)
+pc2var <- round(summary(pca)$importance[2,2]*100, digits=1)
+pc1lab <- paste0("PC1 (",as.character(pc1var),"%)")
+pc2lab <- paste0("PC1 (",as.character(pc2var),"%)")
+plot(PC2~PC1, data=as.data.frame(pca$x), bg=colors[fac], pch=21, xlab=pc1lab, ylab=pc2lab, main=main, ...)
+with(as.data.frame(pca$x), textxy(PC1, PC2, labs=rownames(as.data.frame(pca$x)), cex=textcx))
+legend(legendpos, legend=levels(fac), col=colors, pch=20)
+
+}
+png("qc-pca.png", 1000, 1000, pointsize=20)
+rlt_pca(rlt, colors=mycols, intgroup="Condition", xlim=c(-75, 35))
+```
+### __Alternative Shrinkage Estimators__
+DESeq2 contains additional shrinkage estimators besides those moderated log fold changes proposed by Love & Huber, 2014 that use a normal prior distribution, centered on zero and with a scale that is fit to the data. The shrunken log fold changes are useful for ranking and visualization, without the need for arbitrary filters on low count genes. The normal prior at times produces shrinkage that is too strong for certain datasets.  
+
+The additional adaptive shrinkage estimators used by DESeq2 are available via the `type` argument of `lfcShrink`. They include `apeglm` and `ashr`. `normal` is the the original DESeq2 shrinkage estimator, it employs an adaptive Normal distribution as prior.
+
+```{r, echo=TRUE}
+resultsNames(StarDeseq)
+library(apeglm)
+library(ashr)
+resLFC <- lfcShrink(StarDeseq, coef="Condition_normal_vs_disease", type="apeglm")
+resNorm <- lfcShrink(StarDeseq, coef=2, type="normal")
+resAsh <- lfcShrink(StarDeseq, coef=2, type="ashr")
+
+par(mfrow=c(1,3), mar=c(4,4,2,1))
+xlim <- c(1,1e5); ylim <- c(-3,3)
+plotMA(resLFC, xlim=xlim, ylim=ylim, main="apeglm")
+plotMA(resNorm, xlim=xlim, ylim=ylim, main="normal")
+plotMA(resAsh, xlim=xlim, ylim=ylim, main="ashr")
+
+
+```
+### __Getting differential Expression Results__
+
+``` {r, echo=TRUE}
+
+res2 <- results(StarDeseq)
+table(res2$padj<0.05)
+## Order by adjusted p-value
+res2 <- res2[order(res2$padj), ]
+## Merge with normalized count data
+resdata <- merge(as.data.frame(res2), as.data.frame(counts(StarDeseq, normalized=TRUE)), by="row.names", sort=FALSE)
+names(resdata)[1] <- "Gene"
+head(resdata)
+## Write results
+write.csv(resdata, file="diffexpr-results.csv")
+
+
+#MAPLOT
+maplot <- function (res2, thresh=0.05, labelsig=TRUE, textcx=1, ...) {
+with(res2, plot(baseMean, log2FoldChange, pch=20, cex=.5, log="x", ...))
+with(subset(res2, padj<thresh), points(baseMean, log2FoldChange, col="red", pch=20, cex=1.5))
+if (labelsig) {
+require(calibrate)
+with(subset(res2, padj<thresh), textxy(baseMean, log2FoldChange, labs=Gene, cex=textcx, col=2))
+}
+}
+png("diffexpr-maplot.png", 1500, 1000, pointsize=20)
+ma.plt <- maplot(resdata, main="MA Plot")
+ma.plt
+```  
+
+### __Adding Annotation to DESeq2 Results__  
+After obtaining a list of differentially expressed genes, the only annotation present is normally the Ensembl Gene ID, which is not as informative.  
+This can be done using `org.Mm.eg.db` package or `biomaRt`, an interface to the biomaRt resource.  
+The `org.Hs.eg.db` package is the organism annotation package for humans organized as an AnnotationDbi database package (“db”), using Entrez Gene IDs (“eg”) as primary key.
+```{r, echo=TRUE}  
+library("AnnotationDbi")
+library("org.Hs.eg.db")
+#To get a list of available types:
+columns(org.Hs.eg.db)
+
+#Converting native functions from the annotationDbi package
+
+convertIDs <- function( ids, from, to, db, ifMultiple=c("putNA", "useFirst")) {
+  stopifnot( inherits( db, "AnnotationDb" ) )
+  ifMultiple <- match.arg( ifMultiple )
+  suppressWarnings( selRes <- AnnotationDbi::select(
+    db, keys=ids, keytype=from, columns=c(from,to) ) )
+  if ( ifMultiple == "putNA" ) {
+    duplicatedIds <- selRes[ duplicated( selRes[,1] ), 1 ]
+    selRes <- selRes[ ! selRes[,1] %in% duplicatedIds, ]
+  }
+  return( selRes[ match( ids, selRes[,1] ), 2 ] )
+}
+
+```
+The function takes a list of IDs as first argument and their key type as the second argument. The third argument is the key type we want to convert to, the fourth is the AnnotationDb object to use. Finally, the last argument specifies what to do if one source ID maps to several target IDs, whether the function return an NA or simply the first of the multiple IDs? To convert the Ensembl IDs in the rownames of `res` to gene symbols and add them as a new column,the function below was used:  
+
+```{r, echo=TRUE}
+res$hgnc_symbol <- convertIDs(row.names(res), "ENSEMBL", "SYMBOL", org.Hs.eg.db)
+res$entrezgene <- convertIDs(row.names(res), "ENSEMBL", "ENTREZID", org.Hs.eg.db)
+
+```
+Once the desired external geneIDs have been attached to the results:  
+
+```{r, echo=TRUE}
+resordered <- res[order(res$pvalue),]
+head(resordered)
+```
+The results can then be exported as shown below:  
+
+```{r, echo=TRUE}
+write.csv(as.data.frame(resordered), file="results.csv")
+```
