@@ -1,0 +1,113 @@
+
+#Sequencing Data (6 samples)
+sample37
+sample38
+sample39
+sample40
+sample41
+sample42
+
+#Forward 			Reverse
+sample37_R1.fastq sample37_R2.fastq
+sample38_R1.fastq sample38_R2.fastq
+sample39_R1.fastq sample39_R2.fastq
+sample40_R1.fastq sample40_R2.fastq
+sample41_R1.fastq sample41_R2.fastq
+sample42_R1.fastq sample42_R2.fastq
+
+
+#Pre-processing of sequencing reads
+#Outline:
+#Demultiplex by index or barcode
+#Remove adapter sequences
+#Trim reads by quality
+#Discard reads by quality/ambiguity
+
+# Quality Check using FastQC v0.11.8
+mkdir qcResults
+fastqc /home/snabirye/mini_project/*R*fastq -o qcResults
+​
+# Aggregate FastQC results using MultiQC v1.7
+multiqc qcResults/*
+
+#Trimming using Trimmomatic v.
+for sample in `cat /home/snabirye/mini_project/list.txt`
+do
+R1=/home/snabirye/mini_project/${sample}_R1.fastq
+R2=/home/snabirye/mini_project/${sample}_R2.fastq
+​
+trimmomatic PE -threads 4 $R1 $R2 ${sample}.trimmed1.fastq ${sample}.untrimmed1.fastq ${sample}.trimmed2.fastq ${sample}.untrimmed2.fastq SLIDINGWINDOW:4:28
+done
+​
+#Quality Trimming with TrimGalore version 0.6.4
+#In this step, low-quality base calls are trimmed off from the 3' end of the reads before adapter removal.
+#This efficiently removes poor quality portions of the reads.
+
+#Adapter Trimming Cutadapt version: 2.5
+In this step, Cutadapt finds and removes adapter sequences from the 3’ end of reads.
+If no sequence is supplied, Trim Galore attempts to auto-detect the adapter which has been used. 
+For this it analyses the first 1 million sequences of the first specified file and attempt to find the first 12 or 13bp of the following standard adapters:
+Illumina:   AGATCGGAAGAGC
+Small RNA:  TGGAATTCTCGG
+Nextera:    CTGTCTCTTATA
+
+#Removing Short Sequences
+Given that quality and/or adapter trimming may result in very short sequences (sometimes as short as 0 bp), 
+Trim Galore filters trimmed reads based on their sequence length (default: 20 bp). An option --paired which runs a paired-end 
+validation on both trimmed _1 and _2 FastQ files once the trimming has completed. 
+This step removes entire read pairs if at least one of the two sequences became shorter than a certain threshold. 
+
+mkdir trimmed_reads
+for sample in `cat /home/snabirye/mini_project/list.txt`
+do
+R1=/home/snabirye/mini_project/${sample}_R1.fastq
+R2=/home/snabirye/mini_project/${sample}_R2.fastq
+trim_galore -j 10 -q 20 --length 20 --paired $R1 $R2 --fastqc -o trimmed_reads
+done
+
+#Fastqc after trimming
+mkdir trimmedqc_results
+for sample in `cat list.txt`
+do
+R1=${sample}.trimmed1.fastq
+R2=${sample}.trimmed2.fastq
+​
+fastqc $R1 $R2 -o trimmedqc_results
+done
+
+
+
+#Alignment to reference genome with STAR
+for sample in `cat list.txt`
+do
+R1=${sample}_R1_val_1.fq
+R2=${sample}_R2_val_2.fq
+STAR --runMode alignReads \
+--genomeDir /home/fkakembo/Bioinformatics/RNASeq_MiniProject/Ref_Genome  \
+--runThreadN 6 --readFilesIn /home/snabirye/mini_project/Trim_galore/$R1 /home/snabirye/mini_project/Trim_galore/$R2 \
+--outFileNamePrefix ${sample} \
+--outSAMtype BAM Unsorted \
+--genomeLoad LoadAndKeep \
+--outSAMunmapped Within \
+--outSAMattributes Standarddone
+
+#Alignment with hisat2
+#Building index
+hisat2-build -p 10 /home/fkakembo/Bioinformatics/RNASeq_MiniProject/References/Homo_sapiens.GRCh38.dna.primary_assembly.fa ref-hm
+
+#alignment
+hisat2 -p 20 -x ref-hm -1 /home/snabirye/mini_project/Trim_galore/$R1  -2 /home/snabirye/mini_project/Trim_galore/$R2 -S ${sample}.sam
+done
+
+#Kallisto
+#Building index
+kallisto index -i kallisto_index /home/fkakembo/Bioinformatics/RNASeq_MiniProject/References/gencode.v34.transcripts.fa
+
+#Alignment with kallisto
+kallisto pseudo -i kallisto_index -o kallisto_results /home/snabirye/mini_project/Trim_galore/$R1 /home/snabirye/mini_project/Trim_galore/$R2
+done
+
+featureCounts -T 4 \
+ -a /home/fkakembo/Bioinformatics/RNASeq_MiniProject/References/Homo_sapiens.GRCh38.100.gtf \
+ -o featurecounts.txt \
+ /home/snabirye/mini_project/*.out.bam
