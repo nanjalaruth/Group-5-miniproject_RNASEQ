@@ -10,3 +10,11 @@ As part of the EANBIT Virtual Residential Training 2020, this group will be work
 1. Mthande S. Mzwakhile
 1. Monica Mbabazi
 1. Ritah Nabunje
+
+A summary of the steps followed in our analysis include;
+
+- Preporecessing of the reads
+- Alignment of samples to a reference
+- Performing feature counts of the aligned reads
+- Differential Expression in R using DeSEq
+
