@@ -14,6 +14,7 @@ As part of the EANBIT Virtual Residential Training 2020, this group will be work
 A summary of the steps followed in our analysis include;
 
 - Preporecessing of the reads
+  - Quality Check using **Fastqc**
 - Alignment of samples to a reference
 - Performing feature counts of the aligned reads
 - Differential Expression in R using DeSEq
