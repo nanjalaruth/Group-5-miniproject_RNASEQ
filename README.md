@@ -1,7 +1,7 @@
 # Group-5-miniproject_RNASEQ
 As part of the EANBIT Virtual Residential Training 2020, this group will be working on a mini-project towards an RNA-Seq data processing and gene expression analysis workflow. 
 
-## The are Members of the group
+## Group Members
 1. Ruth Nanjala (Group Lead)
 1. Kakembo Fredrick Elishama
 1. Eric G. Kairuki
@@ -14,7 +14,9 @@ As part of the EANBIT Virtual Residential Training 2020, this group will be work
 A summary of the steps followed in our analysis include;
 
 - Preporecessing of the reads
-  - Quality Check using **Fastqc**
+  - Quality Check using **Fastqc** and `multiqc`
+  - Trimming of poor qualit bases and filtering short reads using **Trim_galore**
+  - Rechecking quality of trimmed sequences using `multiqc`
 - Alignment of samples to a reference
 - Performing feature counts of the aligned reads
 - Differential Expression in R using DeSEq
