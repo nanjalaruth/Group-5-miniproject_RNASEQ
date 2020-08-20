@@ -15,9 +15,11 @@ A summary of the steps followed in our analysis include;
 
 - Preporecessing of the reads
   - Quality Check using **Fastqc** and `multiqc`
-  - Trimming of poor qualit bases and filtering short reads using **Trim_galore**
+  - Trimming of poor quality bases and filtering short reads using **Trim_galore**
   - Rechecking quality of trimmed sequences using `multiqc`
-- Alignment of samples to a reference
+- Alignment of samples to a reference. Two approached were use; 
+  - Classical alignment using **`Hisat2`**
+  - Pseudo-alignment using **`Kallisto`**
 - Performing feature counts of the aligned reads
 - Differential Expression in R using DeSEq
 
