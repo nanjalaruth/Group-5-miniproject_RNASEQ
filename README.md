@@ -19,8 +19,8 @@ A summary of the steps followed in our analysis include;
   - Quality check using `multiqc`
 - Alignment of samples to the reference. Two approaches were used; 
   - Classical alignment using **`Hisat2`**
-    - Count generation using Subreads feature count
-      -Quality check using MultiQC
+    - Count generation using **Subreads feature count**
+      -Quality check using `multiqc`
   - Pseudo-alignment using **`Kallisto`**
 - Differential Expression Analysis in R using DeSEq
 
