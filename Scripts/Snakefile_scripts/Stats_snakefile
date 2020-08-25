@@ -1,0 +1,8 @@
+rule Stats:
+    input:
+	"/home/ruth/RT_GENOMICS/Mapping_results/hisat_counts/featurecounts.txt",
+        "/home/ruth/RT_GENOMICS/Mapping_results/practice.dataset.metadata.tsv"
+    output:
+	"/home/ruth/RT_GENOMICS/Mapping_results/Differential_Expression.html"
+    script:
+       "Rscript -e \"rmarkdown::render('/home/ruth/RT_GENOMICS/Mapping_results/Differential_Expression.Rmd')\""
