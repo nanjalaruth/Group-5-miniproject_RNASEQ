@@ -1,0 +1,150 @@
+###   Defining a few global variables to be used
+# Samples to be used
+SAMPLES, = glob_wildcards("../data/{sample}_R1.fastq.gz")
+# Full genome for hisat2 alignment
+full_Ref="../References/Homo_sapiens.GRCh38.dna.primary_assembly.fa"
+# Annotation for full reference required
+ref_annot="../References/Homo_sapiens.GRCh38.100.gtf"
+# Transcriptome index required by kallisto
+txpme="../References/gencode.v34.transcripts.fa"
+
+#Defining our Forward and reverse reads
+r1 = "../data/{sample}_R1.fastq.gz"
+r2 = "../data/{sample}_R2.fastq.gz"
+
+
+#Defining the input files for the final rule, 
+#Which should be the final files we want to generate
+rule all:
+        input:
+                "hisat2/hisat2_counts.txt",
+                "Results/Fastqc_Reports/multiqc_report.html",
+                "Results/Trim_galore/multiqc_report.html",
+                expand("Kallisto/{sample}/abundance.tsv",  sample=SAMPLES)
+
+
+#Rule1: First Quality Check
+rule fastqc_check1:
+        input:
+                read1=r1,
+                read2=r2
+        output:
+                "Results/Fastqc_Reports/{sample}_R1_fastqc.html",
+                "Results/Fastqc_Reports/{sample}_R2_fastqc.html"
+#       message: """--- Quality check of raw data with Fastqc."""
+        shell:
+                "fastqc {input} -o Results/Fastqc_Reports {input.read1} {input.read2} -t 20"
+
+#Rule2: Multiqc on the initial Fastqc reports
+rule multiqc1:
+	input:
+		html=expand("Results/Fastqc_Reports/{sample}_R1_fastqc.html", sample=SAMPLES),
+	params:
+                dir="Results/Fastqc_Reports"
+	output:
+		"Results/Fastqc_Reports/multiqc_report.html"
+#        message: """--- Concatenating all the fastqc reports into a single report"""
+	shell:
+		"multiqc {params.dir}  -o {params.dir} "
+
+#Rule3: Trimming of samples with Trim_galore
+rule trimming:
+        input:
+                read1=r1,
+                read2=r2,
+                html="Results/Fastqc_Reports/{sample}_R1_fastqc.html"
+        output:
+                r1="Results/Trim_galore/{sample}_R1_val_1.fq.gz",
+                r2="Results/Trim_galore/{sample}_R2_val_2.fq.gz",
+		r1_html="Results/Trim_galore/{sample}_R1_val_1_fastqc.html",
+		r2_html="Results/Trim_galore/{sample}_R2_val_2_fastqc.html"
+        shell:
+                "trim_galore -j 8 --paired {input.read1} {input.read2} -q 25 --length 20 --fastqc -o Results/Trim_galore"
+
+
+#Rule4: Multiqc results for the trimmed fastq reads
+rule multiqc2:
+	input:
+		trim_html=expand("Results/Trim_galore/{sample}_R1_val_1_fastqc.html", sample=SAMPLES)
+	output:
+		"Results/Trim_galore/multiqc_report.html"
+	params:
+		dir="Results/Trim_galore"
+	shell:
+		"multiqc {params.dir} -o {params.dir}"
+
+
+#Rule5:  Indexing reference with HISAT2
+rule hisat2_indexing:
+        input:
+                ref=full_Ref
+        output:
+                touch("hisat2/makeidx.done")
+        params:
+                threads=20,
+                idx="hisat2/Homo_sapiens.GRCh38v3_hisat2.idx"
+        shell:
+                "hisat2-build -p {params.threads} {input.ref} {params.idx}"
+
+#Rule6: Aligment using HISAT2
+rule hisat2_Alignment:
+        input:
+                idxdone="hisat2/makeidx.done",
+                trim1="Results/Trim_galore/{sample}_R1_val_1.fq.gz",
+                trim2="Results/Trim_galore/{sample}_R2_val_2.fq.gz"
+        output:
+                "hisat2/{sample}.sam"
+        params:
+                idx="hisat2/Homo_sapiens.GRCh38v3_hisat2.idx",
+                threads=20
+        shell:
+                "hisat2 -p {params.threads} -x {params.idx}  -1 {input.trim1} -2 {input.trim2} -S {output}"
+
+
+#Rule7: Convert sam to bam; index the bam; as well as remove the bam to save space
+rule convert_sam2bam:
+        input:
+                "hisat2/{sample}.sam"
+        output:
+                "hisat2/{sample}_hisat2_sorted.bam"
+        shell:
+                "samtools view -@ 20 -Sbh {input} | samtools sort -@ 20 > {output}; samtools index {output}; rm {input}"
+
+#Rule8: Extracting counts from the alingment files using featureCounts
+rule featurecounts:
+        input:
+                files=expand("hisat2/{sample}_hisat2_sorted.bam", sample=SAMPLES),
+                annot=ref_annot
+        output:
+                "hisat2/hisat2_counts.txt"
+        params:
+                threads=20
+        shell:
+                "featureCounts -T {params.threads} -a {input.annot} -o {output} {input.files}"
+
+
+##  Pseudo-Aligment Using Kallisto
+#Rule9: Generating kallisto transcriptome index
+rule Kallisto_index:
+        input:
+                ref=txpme
+        output:
+                "Kallisto/kallisto_index"
+        shell:
+                "kallisto index {input.ref} -i {output}"
+
+
+#Rule10:  Pseudo-aligment using Kallisto
+rule kallisto_alignment:
+        input:
+                trim_read1="Results/Trim_galore/{sample}_R1_val_1.fq.gz",
+                trim_read2="Results/Trim_galore/{sample}_R2_val_2.fq.gz",
+                k_idx="Kallisto/kallisto_index"
+        output:
+                "Kallisto/{sample}/abundance.tsv"
+        params:
+                threads=20,
+                btstraps=100,
+                dir="Kallisto/{sample}"
+        shell:
+                "kallisto quant -t {params.threads} -b {params.btstraps} -i {input.k_idx} -o {params.dir}  {input.trim_read1} {input.trim_read2}"
