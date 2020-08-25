@@ -1,0 +1,1 @@
+snakemake -s Fred_Ruth_Snakefile --forceall --dag | dot -Tpdf > dag.pdf

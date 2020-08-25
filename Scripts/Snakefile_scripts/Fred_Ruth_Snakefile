@@ -20,6 +20,7 @@ rule all:
                 "hisat2/hisat2_counts.txt",
                 "Results/Fastqc_Reports/multiqc_report.html",
                 "Results/Trim_galore/multiqc_report.html",
+		"hisat2/multiqc_report.html",
                 expand("Kallisto/{sample}/abundance.tsv",  sample=SAMPLES)
 
 
@@ -86,7 +87,7 @@ rule hisat2_indexing:
         shell:
                 "hisat2-build -p {params.threads} {input.ref} {params.idx}"
 
-#Rule6: Aligment using HISAT2
+#Rule6: Alignment using HISAT2
 rule hisat2_Alignment:
         input:
                 idxdone="hisat2/makeidx.done",
@@ -110,7 +111,7 @@ rule convert_sam2bam:
         shell:
                 "samtools view -@ 20 -Sbh {input} | samtools sort -@ 20 > {output}; samtools index {output}; rm {input}"
 
-#Rule8: Extracting counts from the alingment files using featureCounts
+#Rule8: Extracting counts from the alignment files using featureCounts
 rule featurecounts:
         input:
                 files=expand("hisat2/{sample}_hisat2_sorted.bam", sample=SAMPLES),
@@ -123,8 +124,18 @@ rule featurecounts:
                 "featureCounts -T {params.threads} -a {input.annot} -o {output} {input.files}"
 
 
-##  Pseudo-Aligment Using Kallisto
-#Rule9: Generating kallisto transcriptome index
+#Rule9: Multiqc on the featurecounts directory
+rule multiqc3:
+        input:
+               dir="hisat2"
+        output:
+                "hisat2/multiqc_report.html"
+        shell:
+                "multiqc {input.dir}  -o {input.dir} "
+
+
+##  Pseudo-Alignment Using Kallisto
+#Rule10: Generating kallisto transcriptome index
 rule Kallisto_index:
         input:
                 ref=txpme
@@ -134,7 +145,7 @@ rule Kallisto_index:
                 "kallisto index {input.ref} -i {output}"
 
 
-#Rule10:  Pseudo-aligment using Kallisto
+#Rule11:  Pseudo-alignment using Kallisto
 rule kallisto_alignment:
         input:
                 trim_read1="Results/Trim_galore/{sample}_R1_val_1.fq.gz",
