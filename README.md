@@ -13,13 +13,14 @@ As part of the EANBIT Virtual Residential Training 2020, this group will be work
 
 A summary of the steps followed in our analysis include;
 
-- Preporecessing of the reads
+- Pre-processing of the reads
   - Quality Check using **Fastqc** and `multiqc`
   - Trimming of poor quality bases and filtering short reads using **Trim_galore**
-  - Rechecking quality of trimmed sequences using `multiqc`
-- Alignment of samples to a reference. Two approached were use; 
+  - Quality check using `multiqc`
+- Alignment of samples to the reference. Two approaches were used; 
   - Classical alignment using **`Hisat2`**
+    - Count generation using Subreads feature count
+      -Quality check using MultiQC
   - Pseudo-alignment using **`Kallisto`**
-- Performing feature counts of the aligned reads
-- Differential Expression in R using DeSEq
+- Differential Expression Analysis in R using DeSEq
 
