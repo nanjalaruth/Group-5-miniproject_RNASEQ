@@ -1,0 +1,7 @@
+Sample	featureCounts_mqc-generalstats-featurecounts-percent_assigned	featureCounts_mqc-generalstats-featurecounts-Assigned
+sample37_sorted	72.79307902165053	18657300
+sample38_sorted	74.42061839474187	19630699
+sample39_sorted	75.93851823499908	32492255
+sample40_sorted	75.32199238013587	28862281
+sample41_sorted	75.66884473250485	21509846
+sample42_sorted	77.64631684929097	28053122

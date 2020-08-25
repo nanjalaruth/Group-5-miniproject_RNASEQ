@@ -1,0 +1,11 @@
+{
+    "salmon_version": "1.3.0",
+    "libType": "A",
+    "index": "salmonindex/salmon_index",
+    "threads": "8",
+    "mates1": "../trimmed_reads/sample40_R1_paired.fq",
+    "mates2": "../trimmed_reads/sample40_R2_paired.fq",
+    "validateMappings": [],
+    "output": "salmon_output/sample40_quant",
+    "auxDir": "aux_info"
+}

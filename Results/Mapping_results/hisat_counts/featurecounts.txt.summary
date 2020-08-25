@@ -1,0 +1,15 @@
+Status	./Hisat_SortedBAM/sample37_sorted.bam	./Hisat_SortedBAM/sample38_sorted.bam	./Hisat_SortedBAM/sample39_sorted.bam	./Hisat_SortedBAM/sample40_sorted.bam	./Hisat_SortedBAM/sample41_sorted.bam	./Hisat_SortedBAM/sample42_sorted.bam
+Assigned	12219860	15511473	26990375	26701540	20006452	25677809
+Unassigned_Unmapped	95759	130087	216363	188957	64222	86507
+Unassigned_Read_Type	0	0	0	0	0	0
+Unassigned_Singleton	0	0	0	0	0	0
+Unassigned_MappingQuality	0	0	0	0	0	0
+Unassigned_Chimera	0	0	0	0	0	0
+Unassigned_FragmentLength	0	0	0	0	0	0
+Unassigned_Duplicate	0	0	0	0	0	0
+Unassigned_MultiMapping	1374348	1310510	2133256	2156105	1685717	1832142
+Unassigned_Secondary	0	0	0	0	0	0
+Unassigned_NonSplit	0	0	0	0	0	0
+Unassigned_NoFeatures	2320263	2633732	4373615	4690897	2883902	3600230
+Unassigned_Overlapping_Length	0	0	0	0	0	0
+Unassigned_Ambiguity	876416	1352626	2177056	1901360	1641971	1923779

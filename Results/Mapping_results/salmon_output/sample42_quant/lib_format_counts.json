@@ -1,0 +1,22 @@
+{
+    "read_files": "[ ../trimmed_reads/sample42_R1_paired.fq, ../trimmed_reads/sample42_R2_paired.fq]",
+    "expected_format": "IU",
+    "compatible_fragment_ratio": 1.0,
+    "num_compatible_fragments": 14113003,
+    "num_assigned_fragments": 14113003,
+    "num_frags_with_concordant_consistent_mappings": 13072132,
+    "num_frags_with_inconsistent_or_orphan_mappings": 1264935,
+    "strand_mapping_bias": 0.49905210565499188,
+    "MSF": 0,
+    "OSF": 0,
+    "ISF": 6523675,
+    "MSR": 0,
+    "OSR": 0,
+    "ISR": 6548457,
+    "SF": 614461,
+    "SR": 650474,
+    "MU": 0,
+    "OU": 0,
+    "IU": 0,
+    "U": 0
+}

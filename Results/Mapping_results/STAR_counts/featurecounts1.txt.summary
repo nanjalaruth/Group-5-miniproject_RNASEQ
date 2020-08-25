@@ -1,0 +1,15 @@
+Status	STAR_sortedBAM/sample37_sorted.bam	STAR_sortedBAM/sample38_sorted.bam	STAR_sortedBAM/sample39_sorted.bam	STAR_sortedBAM/sample40_sorted.bam	STAR_sortedBAM/sample41_sorted.bam	STAR_sortedBAM/sample42_sorted.bam
+Assigned	18657300	19630699	32492255	28862281	21509846	28053122
+Unassigned_Unmapped	0	0	0	0	0	0
+Unassigned_Read_Type	0	0	0	0	0	0
+Unassigned_Singleton	0	0	0	0	0	0
+Unassigned_MappingQuality	0	0	0	0	0	0
+Unassigned_Chimera	0	0	0	0	0	0
+Unassigned_FragmentLength	0	0	0	0	0	0
+Unassigned_Duplicate	0	0	0	0	0	0
+Unassigned_MultiMapping	2163920	1694841	2414725	2335158	2030997	2039116
+Unassigned_Secondary	0	0	0	0	0	0
+Unassigned_NonSplit	0	0	0	0	0	0
+Unassigned_NoFeatures	3478432	3284263	5180523	5015584	3082094	3898703
+Unassigned_Overlapping_Length	0	0	0	0	0	0
+Unassigned_Ambiguity	1330944	1768235	2700078	2105508	1803354	2138425
