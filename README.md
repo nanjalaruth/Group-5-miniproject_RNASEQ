@@ -11,7 +11,7 @@ As part of the EANBIT Virtual Residential Training 2020, this group will be work
 1. Monica Mbabazi
 1. Ritah Nabunje
 
-A summary of the steps followed in our analysis include;
+##A summary of the steps followed in our analysis include;##
 
 - Pre-processing of the reads
   - Quality Check using **Fastqc** and `multiqc`
