@@ -23,4 +23,5 @@ As part of the EANBIT Virtual Residential Training 2020, this group will be work
       -Quality check using `multiqc`
   - Pseudo-alignment using **`Kallisto`**
 - Differential Expression Analysis in R using DeSEq
+- Converting the pipeline to R Markdown and Snakemake
 
