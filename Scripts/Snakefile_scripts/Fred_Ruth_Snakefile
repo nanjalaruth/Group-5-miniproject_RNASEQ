@@ -23,7 +23,17 @@ rule all:
 		"hisat2/multiqc_report.html",
                 expand("Kallisto/{sample}/abundance.tsv",  sample=SAMPLES)
 
-
+rule download_data:
+	output:
+		"../data/{sample}_R1.fastq.gz",
+		"../data/{sample}_R2.fastq.gz",
+		#"../data/practice.dataset.metadata.tsv"
+	shell:
+		"wget http://h3data.cbio.uct.ac.za/assessments/RNASeq/practice/dataset/${sample}_R1.fastq.gz
+		wget http://h3data.cbio.uct.ac.za/assessments/RNASeq/practice/dataset/${sample}_R2.fastq.gz
+		wget http://h3data.cbio.uct.ac.za/assessments/RNASeq/practice/practice.dataset.metadata.tsv"
+	
+		
 #Rule1: First Quality Check
 rule fastqc_check1:
         input:
@@ -87,7 +97,7 @@ rule hisat2_indexing:
         shell:
                 "hisat2-build -p {params.threads} {input.ref} {params.idx}"
 
-#Rule6: Alignment using HISAT2
+#Rule6: Aligment using HISAT2
 rule hisat2_Alignment:
         input:
                 idxdone="hisat2/makeidx.done",
@@ -159,3 +169,13 @@ rule kallisto_alignment:
                 dir="Kallisto/{sample}"
         shell:
                 "kallisto quant -t {params.threads} -b {params.btstraps} -i {input.k_idx} -o {params.dir}  {input.trim_read1} {input.trim_read2}"
+
+#Rule12: Statistical analysis in R
+rule Stats:
+    input:
+        "hisat2/hisat2_counts.txt",
+	"../practice.dataset.metadata.tsv"
+    output:
+	"Differential_Expression.pdf"
+    script:
+       "Rscript -e \"rmarkdown::render('/home/ruth/RT_GENOMICS/Mapping_results/Differential_Expression.Rmd')\""
