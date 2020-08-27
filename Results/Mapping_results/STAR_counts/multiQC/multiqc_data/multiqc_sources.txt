@@ -1,7 +1,0 @@
-Module	Section	Sample Name	Source
-featureCounts	all_sections	sample37_sorted	/home/eanbit6/Ruth_RNASEQ/all_rawdata/results/STAR_counts/featurecounts1.txt.summary
-featureCounts	all_sections	sample38_sorted	/home/eanbit6/Ruth_RNASEQ/all_rawdata/results/STAR_counts/featurecounts1.txt.summary
-featureCounts	all_sections	sample39_sorted	/home/eanbit6/Ruth_RNASEQ/all_rawdata/results/STAR_counts/featurecounts1.txt.summary
-featureCounts	all_sections	sample40_sorted	/home/eanbit6/Ruth_RNASEQ/all_rawdata/results/STAR_counts/featurecounts1.txt.summary
-featureCounts	all_sections	sample41_sorted	/home/eanbit6/Ruth_RNASEQ/all_rawdata/results/STAR_counts/featurecounts1.txt.summary
-featureCounts	all_sections	sample42_sorted	/home/eanbit6/Ruth_RNASEQ/all_rawdata/results/STAR_counts/featurecounts1.txt.summary
