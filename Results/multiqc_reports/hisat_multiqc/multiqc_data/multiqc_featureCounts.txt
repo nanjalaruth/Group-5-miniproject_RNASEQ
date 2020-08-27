@@ -1,0 +1,7 @@
+Sample	Total	Assigned	Unassigned_Unmapped	Unassigned_Read_Type	Unassigned_Singleton	Unassigned_MappingQuality	Unassigned_Chimera	Unassigned_FragmentLength	Unassigned_Duplicate	Unassigned_MultiMapping	Unassigned_Secondary	Unassigned_NonSplit	Unassigned_NoFeatures	Unassigned_Overlapping_Length	Unassigned_Ambiguity	percent_assigned
+sample37_hisat2_sorted	25374973	18763163	52174	0	0	0	0	0	0	1665912	0	0	3490267	0	1403457	73.94357818627039
+sample38_hisat2_sorted	26245441	19705708	43708	0	0	0	0	0	0	1437003	0	0	3295063	0	1763959	75.08240383539373
+sample39_hisat2_sorted	42607880	32570844	74798	0	0	0	0	0	0	2057818	0	0	5199974	0	2704446	76.4432400767182
+sample40_hisat2_sorted	38108351	28990619	43365	0	0	0	0	0	0	1924424	0	0	5027134	0	2122809	76.07418909309406
+sample41_hisat2_sorted	28174720	21615743	43376	0	0	0	0	0	0	1615559	0	0	3091937	0	1808105	76.72034717647594
+sample42_hisat2_sorted	35985107	28120831	47480	0	0	0	0	0	0	1751721	0	0	3911216	0	2153859	78.14574790621019

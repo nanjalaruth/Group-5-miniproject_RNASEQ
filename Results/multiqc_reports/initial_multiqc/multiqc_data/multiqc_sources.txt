@@ -1,0 +1,13 @@
+Module	Section	Sample Name	Source
+FastQC	all_sections	sample41_R1	/home/fkakembo/Bioinformatics/RNASeq_MiniProject/Final_Snakemake/Results/Fastqc_Reports/sample41_R1_fastqc.zip
+FastQC	all_sections	sample41_R2	/home/fkakembo/Bioinformatics/RNASeq_MiniProject/Final_Snakemake/Results/Fastqc_Reports/sample41_R2_fastqc.zip
+FastQC	all_sections	sample42_R2	/home/fkakembo/Bioinformatics/RNASeq_MiniProject/Final_Snakemake/Results/Fastqc_Reports/sample42_R2_fastqc.zip
+FastQC	all_sections	sample38_R1	/home/fkakembo/Bioinformatics/RNASeq_MiniProject/Final_Snakemake/Results/Fastqc_Reports/sample38_R1_fastqc.zip
+FastQC	all_sections	sample38_R2	/home/fkakembo/Bioinformatics/RNASeq_MiniProject/Final_Snakemake/Results/Fastqc_Reports/sample38_R2_fastqc.zip
+FastQC	all_sections	sample39_R1	/home/fkakembo/Bioinformatics/RNASeq_MiniProject/Final_Snakemake/Results/Fastqc_Reports/sample39_R1_fastqc.zip
+FastQC	all_sections	sample39_R2	/home/fkakembo/Bioinformatics/RNASeq_MiniProject/Final_Snakemake/Results/Fastqc_Reports/sample39_R2_fastqc.zip
+FastQC	all_sections	sample40_R2	/home/fkakembo/Bioinformatics/RNASeq_MiniProject/Final_Snakemake/Results/Fastqc_Reports/sample40_R2_fastqc.zip
+FastQC	all_sections	sample37_R1	/home/fkakembo/Bioinformatics/RNASeq_MiniProject/Final_Snakemake/Results/Fastqc_Reports/sample37_R1_fastqc.zip
+FastQC	all_sections	sample40_R1	/home/fkakembo/Bioinformatics/RNASeq_MiniProject/Final_Snakemake/Results/Fastqc_Reports/sample40_R1_fastqc.zip
+FastQC	all_sections	sample42_R1	/home/fkakembo/Bioinformatics/RNASeq_MiniProject/Final_Snakemake/Results/Fastqc_Reports/sample42_R1_fastqc.zip
+FastQC	all_sections	sample37_R2	/home/fkakembo/Bioinformatics/RNASeq_MiniProject/Final_Snakemake/Results/Fastqc_Reports/sample37_R2_fastqc.zip

@@ -1,0 +1,7 @@
+Module	Section	Sample Name	Source
+featureCounts	all_sections	sample40_hisat2_sorted	/home/fkakembo/Bioinformatics/RNASeq_MiniProject/Snakemake/hisat2/hisat2_counts.txt.summary
+featureCounts	all_sections	sample41_hisat2_sorted	/home/fkakembo/Bioinformatics/RNASeq_MiniProject/Snakemake/hisat2/hisat2_counts.txt.summary
+featureCounts	all_sections	sample39_hisat2_sorted	/home/fkakembo/Bioinformatics/RNASeq_MiniProject/Snakemake/hisat2/hisat2_counts.txt.summary
+featureCounts	all_sections	sample37_hisat2_sorted	/home/fkakembo/Bioinformatics/RNASeq_MiniProject/Snakemake/hisat2/hisat2_counts.txt.summary
+featureCounts	all_sections	sample38_hisat2_sorted	/home/fkakembo/Bioinformatics/RNASeq_MiniProject/Snakemake/hisat2/hisat2_counts.txt.summary
+featureCounts	all_sections	sample42_hisat2_sorted	/home/fkakembo/Bioinformatics/RNASeq_MiniProject/Snakemake/hisat2/hisat2_counts.txt.summary

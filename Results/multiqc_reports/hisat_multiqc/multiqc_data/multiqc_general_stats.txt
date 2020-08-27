@@ -1,0 +1,7 @@
+Sample	featureCounts_mqc-generalstats-featurecounts-percent_assigned	featureCounts_mqc-generalstats-featurecounts-Assigned
+sample37_hisat2_sorted	73.94357818627039	18763163
+sample38_hisat2_sorted	75.08240383539373	19705708
+sample39_hisat2_sorted	76.4432400767182	32570844
+sample40_hisat2_sorted	76.07418909309406	28990619
+sample41_hisat2_sorted	76.72034717647594	21615743
+sample42_hisat2_sorted	78.14574790621019	28120831

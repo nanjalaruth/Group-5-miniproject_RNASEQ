@@ -1,0 +1,406 @@
+{
+    "report_data_sources": {
+        "featureCounts": {
+            "all_sections": {
+                "sample40_hisat2_sorted": "/home/fkakembo/Bioinformatics/RNASeq_MiniProject/Snakemake/hisat2/hisat2_counts.txt.summary",
+                "sample41_hisat2_sorted": "/home/fkakembo/Bioinformatics/RNASeq_MiniProject/Snakemake/hisat2/hisat2_counts.txt.summary",
+                "sample39_hisat2_sorted": "/home/fkakembo/Bioinformatics/RNASeq_MiniProject/Snakemake/hisat2/hisat2_counts.txt.summary",
+                "sample37_hisat2_sorted": "/home/fkakembo/Bioinformatics/RNASeq_MiniProject/Snakemake/hisat2/hisat2_counts.txt.summary",
+                "sample38_hisat2_sorted": "/home/fkakembo/Bioinformatics/RNASeq_MiniProject/Snakemake/hisat2/hisat2_counts.txt.summary",
+                "sample42_hisat2_sorted": "/home/fkakembo/Bioinformatics/RNASeq_MiniProject/Snakemake/hisat2/hisat2_counts.txt.summary"
+            }
+        }
+    },
+    "report_general_stats_data": [
+        {
+            "sample40_hisat2_sorted": {
+                "Total": 38108351,
+                "Assigned": 28990619,
+                "Unassigned_Unmapped": 43365,
+                "Unassigned_Read_Type": 0,
+                "Unassigned_Singleton": 0,
+                "Unassigned_MappingQuality": 0,
+                "Unassigned_Chimera": 0,
+                "Unassigned_FragmentLength": 0,
+                "Unassigned_Duplicate": 0,
+                "Unassigned_MultiMapping": 1924424,
+                "Unassigned_Secondary": 0,
+                "Unassigned_NonSplit": 0,
+                "Unassigned_NoFeatures": 5027134,
+                "Unassigned_Overlapping_Length": 0,
+                "Unassigned_Ambiguity": 2122809,
+                "percent_assigned": 76.07418909309406
+            },
+            "sample41_hisat2_sorted": {
+                "Total": 28174720,
+                "Assigned": 21615743,
+                "Unassigned_Unmapped": 43376,
+                "Unassigned_Read_Type": 0,
+                "Unassigned_Singleton": 0,
+                "Unassigned_MappingQuality": 0,
+                "Unassigned_Chimera": 0,
+                "Unassigned_FragmentLength": 0,
+                "Unassigned_Duplicate": 0,
+                "Unassigned_MultiMapping": 1615559,
+                "Unassigned_Secondary": 0,
+                "Unassigned_NonSplit": 0,
+                "Unassigned_NoFeatures": 3091937,
+                "Unassigned_Overlapping_Length": 0,
+                "Unassigned_Ambiguity": 1808105,
+                "percent_assigned": 76.72034717647594
+            },
+            "sample39_hisat2_sorted": {
+                "Total": 42607880,
+                "Assigned": 32570844,
+                "Unassigned_Unmapped": 74798,
+                "Unassigned_Read_Type": 0,
+                "Unassigned_Singleton": 0,
+                "Unassigned_MappingQuality": 0,
+                "Unassigned_Chimera": 0,
+                "Unassigned_FragmentLength": 0,
+                "Unassigned_Duplicate": 0,
+                "Unassigned_MultiMapping": 2057818,
+                "Unassigned_Secondary": 0,
+                "Unassigned_NonSplit": 0,
+                "Unassigned_NoFeatures": 5199974,
+                "Unassigned_Overlapping_Length": 0,
+                "Unassigned_Ambiguity": 2704446,
+                "percent_assigned": 76.4432400767182
+            },
+            "sample37_hisat2_sorted": {
+                "Total": 25374973,
+                "Assigned": 18763163,
+                "Unassigned_Unmapped": 52174,
+                "Unassigned_Read_Type": 0,
+                "Unassigned_Singleton": 0,
+                "Unassigned_MappingQuality": 0,
+                "Unassigned_Chimera": 0,
+                "Unassigned_FragmentLength": 0,
+                "Unassigned_Duplicate": 0,
+                "Unassigned_MultiMapping": 1665912,
+                "Unassigned_Secondary": 0,
+                "Unassigned_NonSplit": 0,
+                "Unassigned_NoFeatures": 3490267,
+                "Unassigned_Overlapping_Length": 0,
+                "Unassigned_Ambiguity": 1403457,
+                "percent_assigned": 73.94357818627039
+            },
+            "sample38_hisat2_sorted": {
+                "Total": 26245441,
+                "Assigned": 19705708,
+                "Unassigned_Unmapped": 43708,
+                "Unassigned_Read_Type": 0,
+                "Unassigned_Singleton": 0,
+                "Unassigned_MappingQuality": 0,
+                "Unassigned_Chimera": 0,
+                "Unassigned_FragmentLength": 0,
+                "Unassigned_Duplicate": 0,
+                "Unassigned_MultiMapping": 1437003,
+                "Unassigned_Secondary": 0,
+                "Unassigned_NonSplit": 0,
+                "Unassigned_NoFeatures": 3295063,
+                "Unassigned_Overlapping_Length": 0,
+                "Unassigned_Ambiguity": 1763959,
+                "percent_assigned": 75.08240383539373
+            },
+            "sample42_hisat2_sorted": {
+                "Total": 35985107,
+                "Assigned": 28120831,
+                "Unassigned_Unmapped": 47480,
+                "Unassigned_Read_Type": 0,
+                "Unassigned_Singleton": 0,
+                "Unassigned_MappingQuality": 0,
+                "Unassigned_Chimera": 0,
+                "Unassigned_FragmentLength": 0,
+                "Unassigned_Duplicate": 0,
+                "Unassigned_MultiMapping": 1751721,
+                "Unassigned_Secondary": 0,
+                "Unassigned_NonSplit": 0,
+                "Unassigned_NoFeatures": 3911216,
+                "Unassigned_Overlapping_Length": 0,
+                "Unassigned_Ambiguity": 2153859,
+                "percent_assigned": 78.14574790621019
+            }
+        }
+    ],
+    "report_general_stats_headers": [
+        {
+            "percent_assigned": {
+                "title": "% Assigned",
+                "description": "% Assigned reads",
+                "max": 100,
+                "min": 0,
+                "suffix": "%",
+                "scale": "RdYlGn",
+                "namespace": "featureCounts",
+                "rid": "mqc-generalstats-featurecounts-percent_assigned",
+                "format": "{:,.1f}",
+                "colour": "55,126,184",
+                "hidden": null,
+                "ceiling": null,
+                "floor": null,
+                "minRange": null,
+                "shared_key": null,
+                "modify": null,
+                "placement": 1000.0,
+                "dmax": 100.0,
+                "dmin": 0.0
+            },
+            "Assigned": {
+                "title": "M Assigned",
+                "description": "Assigned reads (millions)",
+                "min": 0,
+                "scale": "PuBu",
+                "modify": 1e-06,
+                "shared_key": "read_count",
+                "namespace": "featureCounts",
+                "rid": "mqc-generalstats-featurecounts-Assigned",
+                "format": "{:,.1f}",
+                "colour": "55,126,184",
+                "hidden": null,
+                "max": null,
+                "ceiling": null,
+                "floor": null,
+                "minRange": null,
+                "placement": 1000.0,
+                "dmax": 32.570844,
+                "dmin": 0.0
+            }
+        }
+    ],
+    "report_multiqc_command": "/biocompace/bin/multiqc hisat2 -o hisat2",
+    "report_plot_data": {
+        "featureCounts_assignment_plot": {
+            "plot_type": "bar_graph",
+            "samples": [
+                [
+                    "sample37_hisat2_sorted",
+                    "sample38_hisat2_sorted",
+                    "sample39_hisat2_sorted",
+                    "sample40_hisat2_sorted",
+                    "sample41_hisat2_sorted",
+                    "sample42_hisat2_sorted"
+                ]
+            ],
+            "datasets": [
+                [
+                    {
+                        "name": "Assigned",
+                        "data": [
+                            18763163.0,
+                            19705708.0,
+                            32570844.0,
+                            28990619.0,
+                            21615743.0,
+                            28120831.0
+                        ]
+                    },
+                    {
+                        "name": "Unassigned_Unmapped",
+                        "data": [
+                            52174.0,
+                            43708.0,
+                            74798.0,
+                            43365.0,
+                            43376.0,
+                            47480.0
+                        ]
+                    },
+                    {
+                        "name": "Unassigned_MultiMapping",
+                        "data": [
+                            1665912.0,
+                            1437003.0,
+                            2057818.0,
+                            1924424.0,
+                            1615559.0,
+                            1751721.0
+                        ]
+                    },
+                    {
+                        "name": "Unassigned_NoFeatures",
+                        "data": [
+                            3490267.0,
+                            3295063.0,
+                            5199974.0,
+                            5027134.0,
+                            3091937.0,
+                            3911216.0
+                        ]
+                    },
+                    {
+                        "name": "Unassigned_Ambiguity",
+                        "data": [
+                            1403457.0,
+                            1763959.0,
+                            2704446.0,
+                            2122809.0,
+                            1808105.0,
+                            2153859.0
+                        ]
+                    }
+                ]
+            ],
+            "config": {
+                "id": "featureCounts_assignment_plot",
+                "title": "featureCounts: Assignments",
+                "ylab": "# Reads",
+                "cpswitch_counts_label": "Number of Reads"
+            }
+        }
+    },
+    "report_saved_raw_data": {
+        "multiqc_featureCounts": {
+            "sample40_hisat2_sorted": {
+                "Total": 38108351,
+                "Assigned": 28990619,
+                "Unassigned_Unmapped": 43365,
+                "Unassigned_Read_Type": 0,
+                "Unassigned_Singleton": 0,
+                "Unassigned_MappingQuality": 0,
+                "Unassigned_Chimera": 0,
+                "Unassigned_FragmentLength": 0,
+                "Unassigned_Duplicate": 0,
+                "Unassigned_MultiMapping": 1924424,
+                "Unassigned_Secondary": 0,
+                "Unassigned_NonSplit": 0,
+                "Unassigned_NoFeatures": 5027134,
+                "Unassigned_Overlapping_Length": 0,
+                "Unassigned_Ambiguity": 2122809,
+                "percent_assigned": 76.07418909309406
+            },
+            "sample41_hisat2_sorted": {
+                "Total": 28174720,
+                "Assigned": 21615743,
+                "Unassigned_Unmapped": 43376,
+                "Unassigned_Read_Type": 0,
+                "Unassigned_Singleton": 0,
+                "Unassigned_MappingQuality": 0,
+                "Unassigned_Chimera": 0,
+                "Unassigned_FragmentLength": 0,
+                "Unassigned_Duplicate": 0,
+                "Unassigned_MultiMapping": 1615559,
+                "Unassigned_Secondary": 0,
+                "Unassigned_NonSplit": 0,
+                "Unassigned_NoFeatures": 3091937,
+                "Unassigned_Overlapping_Length": 0,
+                "Unassigned_Ambiguity": 1808105,
+                "percent_assigned": 76.72034717647594
+            },
+            "sample39_hisat2_sorted": {
+                "Total": 42607880,
+                "Assigned": 32570844,
+                "Unassigned_Unmapped": 74798,
+                "Unassigned_Read_Type": 0,
+                "Unassigned_Singleton": 0,
+                "Unassigned_MappingQuality": 0,
+                "Unassigned_Chimera": 0,
+                "Unassigned_FragmentLength": 0,
+                "Unassigned_Duplicate": 0,
+                "Unassigned_MultiMapping": 2057818,
+                "Unassigned_Secondary": 0,
+                "Unassigned_NonSplit": 0,
+                "Unassigned_NoFeatures": 5199974,
+                "Unassigned_Overlapping_Length": 0,
+                "Unassigned_Ambiguity": 2704446,
+                "percent_assigned": 76.4432400767182
+            },
+            "sample37_hisat2_sorted": {
+                "Total": 25374973,
+                "Assigned": 18763163,
+                "Unassigned_Unmapped": 52174,
+                "Unassigned_Read_Type": 0,
+                "Unassigned_Singleton": 0,
+                "Unassigned_MappingQuality": 0,
+                "Unassigned_Chimera": 0,
+                "Unassigned_FragmentLength": 0,
+                "Unassigned_Duplicate": 0,
+                "Unassigned_MultiMapping": 1665912,
+                "Unassigned_Secondary": 0,
+                "Unassigned_NonSplit": 0,
+                "Unassigned_NoFeatures": 3490267,
+                "Unassigned_Overlapping_Length": 0,
+                "Unassigned_Ambiguity": 1403457,
+                "percent_assigned": 73.94357818627039
+            },
+            "sample38_hisat2_sorted": {
+                "Total": 26245441,
+                "Assigned": 19705708,
+                "Unassigned_Unmapped": 43708,
+                "Unassigned_Read_Type": 0,
+                "Unassigned_Singleton": 0,
+                "Unassigned_MappingQuality": 0,
+                "Unassigned_Chimera": 0,
+                "Unassigned_FragmentLength": 0,
+                "Unassigned_Duplicate": 0,
+                "Unassigned_MultiMapping": 1437003,
+                "Unassigned_Secondary": 0,
+                "Unassigned_NonSplit": 0,
+                "Unassigned_NoFeatures": 3295063,
+                "Unassigned_Overlapping_Length": 0,
+                "Unassigned_Ambiguity": 1763959,
+                "percent_assigned": 75.08240383539373
+            },
+            "sample42_hisat2_sorted": {
+                "Total": 35985107,
+                "Assigned": 28120831,
+                "Unassigned_Unmapped": 47480,
+                "Unassigned_Read_Type": 0,
+                "Unassigned_Singleton": 0,
+                "Unassigned_MappingQuality": 0,
+                "Unassigned_Chimera": 0,
+                "Unassigned_FragmentLength": 0,
+                "Unassigned_Duplicate": 0,
+                "Unassigned_MultiMapping": 1751721,
+                "Unassigned_Secondary": 0,
+                "Unassigned_NonSplit": 0,
+                "Unassigned_NoFeatures": 3911216,
+                "Unassigned_Overlapping_Length": 0,
+                "Unassigned_Ambiguity": 2153859,
+                "percent_assigned": 78.14574790621019
+            }
+        },
+        "multiqc_general_stats": {
+            "sample40_hisat2_sorted": {
+                "featureCounts_mqc-generalstats-featurecounts-percent_assigned": 76.07418909309406,
+                "featureCounts_mqc-generalstats-featurecounts-Assigned": 28990619
+            },
+            "sample41_hisat2_sorted": {
+                "featureCounts_mqc-generalstats-featurecounts-percent_assigned": 76.72034717647594,
+                "featureCounts_mqc-generalstats-featurecounts-Assigned": 21615743
+            },
+            "sample39_hisat2_sorted": {
+                "featureCounts_mqc-generalstats-featurecounts-percent_assigned": 76.4432400767182,
+                "featureCounts_mqc-generalstats-featurecounts-Assigned": 32570844
+            },
+            "sample37_hisat2_sorted": {
+                "featureCounts_mqc-generalstats-featurecounts-percent_assigned": 73.94357818627039,
+                "featureCounts_mqc-generalstats-featurecounts-Assigned": 18763163
+            },
+            "sample38_hisat2_sorted": {
+                "featureCounts_mqc-generalstats-featurecounts-percent_assigned": 75.08240383539373,
+                "featureCounts_mqc-generalstats-featurecounts-Assigned": 19705708
+            },
+            "sample42_hisat2_sorted": {
+                "featureCounts_mqc-generalstats-featurecounts-percent_assigned": 78.14574790621019,
+                "featureCounts_mqc-generalstats-featurecounts-Assigned": 28120831
+            }
+        }
+    },
+    "config_analysis_dir_abs": [
+        "/home/fkakembo/Bioinformatics/RNASeq_MiniProject/Snakemake/hisat2"
+    ],
+    "config_analysis_dir": [
+        "hisat2"
+    ],
+    "config_creation_date": "2020-08-25, 11:03",
+    "config_git_hash": null,
+    "config_intro_text": null,
+    "config_report_comment": null,
+    "config_report_header_info": null,
+    "config_script_path": "/biocompace/lib/python3.6/site-packages/multiqc/utils",
+    "config_short_version": "1.7",
+    "config_subtitle": null,
+    "config_title": null,
+    "config_version": "1.7"
+}
