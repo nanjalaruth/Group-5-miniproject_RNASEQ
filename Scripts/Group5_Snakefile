@@ -1,0 +1,224 @@
+###################################################################################################################################################################
+#    GROUP 5 RNA_SEQ MINIPROJECT                                                                                                                                   #                            #
+#    SNAKEMAKE SCRIPT COMPILATION                                                                                                                                  #                      #
+####################################################################################################################################################################
+
+
+
+#We will first download the data to be used 
+rule download_data:
+    output:
+        reads=("sample37.fastq.gz",
+         "sample39.fastq.gz",
+         "sample40.fastqc.gz",
+         "sample41.fastqc.gz",
+         "sample42.fastqc.gz",
+         "sample38.fastqc.gz")
+
+    shell:                                                                                                                                                             
+        """
+        mkdir -p raw_data
+        cd raw_data
+        wget -c http://h3data.cbio.uct.ac.za/assessments/RNASeq/practice/dataset/sample37_R1.fastq.gz
+        wget -c http://h3data.cbio.uct.ac.za/assessments/RNASeq/practice/dataset/sample37_R2.fastq.gz
+        wget -c http://h3data.cbio.uct.ac.za/assessments/RNASeq/practice/dataset/sample38_R1.fastq.gz
+        wget -c http://h3data.cbio.uct.ac.za/assessments/RNASeq/practice/dataset/sample38_R2.fastq.gz
+        wget -c http://h3data.cbio.uct.ac.za/assessments/RNASeq/practice/dataset/sample39_R1.fastq.gz
+        wget -c http://h3data.cbio.uct.ac.za/assessments/RNASeq/practice/dataset/sample39_R2.fastq.gz
+        wget -c http://h3data.cbio.uct.ac.za/assessments/RNASeq/practice/dataset/sample40_R1.fastq.gz
+        wget -c http://h3data.cbio.uct.ac.za/assessments/RNASeq/practice/dataset/sample40_R2.fastq.gz
+        wget -c http://h3data.cbio.uct.ac.za/assessments/RNASeq/practice/dataset/sample41_R1.fastq.gz
+        wget -c http://h3data.cbio.uct.ac.za/assessments/RNASeq/practise/dataset/sample41_R2.fastq.gz                         
+        wget -c http://h3data.cbio.uct.ac.za/assessments/RNASeq/practice/dataset/sample42_R1.fastq.gz
+        wget -c http://h3data.cbio.uct.ac.za/assessments/RNASeq/practise/dataset/sample42_R2.fastq.gz
+
+        #the metadata dataset 
+        wget -c http://h3data.cbio.uct.ac.za/assessments/RNASeq/practice/practice.dataset.metadata.tsv
+        
+        #The human reference
+        wget -c ftp://ftp.ensembl.org/pub/release-100/fasta/homo_sapiens/dna/Homo_sapiens.GRCh38.dna.primary_assembly.fa.gz \
+                                                                    -O hisat2/Homo_sapiens.GRCh38.dna.primary_assembly.fa.gz
+        #unzipping the file
+        gunzip  hisat2/Homo_sapiens.GRCh38.dna.primary_assembly.fa.gz 
+        
+        # The annotation file and unzipping
+        wget -c ftp://ftp.ensembl.org/pub/release-100/gtf/homo_sapiens/Homo_sapiens.GRCh38.100.gtf.gz -O hisat/Homo_sapiens.GRCh38.100.gtf.gz
+        gunzip hisat/Homo_sapiens.GRCh38.100.gtf.gz
+        
+        #The transcriptome and unzipping
+        wget -c ftp://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_34/gencode.v34.transcripts.fa.gz -O Kallisto/gencode.v34.transcripts.fa.gz
+        gunzip Kallisto/gencode.v34.transcripts.fa.gz
+      """
+
+# Defining a global wildcard for samples to be used
+SAMPLES, = glob_wildcards("raw_data/{sample}_R1.fastq.gz")
+
+# Full genome for hisat2 alignment
+full_Ref="raw_data/Homo_sapiens.GRCh38.dna.primary_assembly.fa"
+
+# Annotation for full reference required
+ref_annot="raw_data/Homo_sapiens.GRCh38.100.gtf"
+
+# Transcriptome index required by kallisto
+txpme="raw_data/gencode.v34.transcripts.fa"
+
+#Defining our Forward and reverse reads
+r1 = "raw_data/{sample}_R1.fastq.gz"
+r2 = "raw_data/{sample}_R2.fastq.gz""
+
+
+#Defining the input files for the final rule, which should be the final files we want to generate
+rule all:
+        input:
+                "hisat2/hisat2_counts.txt",
+                "Results/Fastqc_Reports/multiqc_report.html",
+                "Results/Trim_galore/multiqc_report.html",
+		"hisat2/multiqc_report.html",
+                expand("Kallisto/{sample}/abundance.tsv",  sample=SAMPLES)
+
+
+#Quality Check
+rule fastqc_check1:
+        input:
+                read1=r1,
+                read2=r2
+        output:
+                "Results/Fastqc_Reports/{sample}_R1_fastqc.html",
+                "Results/Fastqc_Reports/{sample}_R2_fastqc.html"
+
+        shell:
+                "fastqc {input} -o Results/Fastqc_Reports {input.read1} {input.read2} -t 20"
+
+#Multiqc on the initial Fastqc reports
+rule multiqc1:
+	input:
+		html=expand("Results/Fastqc_Reports/{sample}_R1_fastqc.html", sample=SAMPLES),
+	params:
+                dir="Results/Fastqc_Reports"
+	output:
+		"Results/Fastqc_Reports/multiqc_report.html"
+
+	shell:
+		"multiqc {params.dir}  -o {params.dir} "
+
+#Trimming of samples with Trim_galore
+rule trimming:
+        input:
+                read1=r1,
+                read2=r2,
+                html="Results/Fastqc_Reports/{sample}_R1_fastqc.html"
+        output:
+                r1="Results/Trim_galore/{sample}_R1_val_1.fq.gz",
+                r2="Results/Trim_galore/{sample}_R2_val_2.fq.gz",
+		r1_html="Results/Trim_galore/{sample}_R1_val_1_fastqc.html",
+		r2_html="Results/Trim_galore/{sample}_R2_val_2_fastqc.html"
+        shell:
+                "trim_galore -j 8 --paired {input.read1} {input.read2} -q 25 --length 20 --fastqc -o Results/Trim_galore"
+
+
+#Multiqc results for the trimmed fastq reads
+rule multiqc2:
+	input:
+		trim_html=expand("Results/Trim_galore/{sample}_R1_val_1_fastqc.html", sample=SAMPLES)
+	output:
+		"Results/Trim_galore/multiqc_report.html"
+	params:
+		dir="Results/Trim_galore"
+	shell:
+		"multiqc {params.dir} -o {params.dir}"
+
+
+#Indexing reference with HISAT2
+rule hisat2_indexing:
+        input:
+                ref=full_Ref
+        output:
+                touch("hisat2/makeidx.done")
+        params:
+                threads=20,
+                idx="hisat2/Homo_sapiens.GRCh38v3_hisat2.idx"
+        shell:
+                "hisat2-build -p {params.threads} {input.ref} {params.idx}"
+
+#Alignment using HISAT2
+rule hisat2_Alignment:
+        input:
+                idxdone="hisat2/makeidx.done",
+                trim1="Results/Trim_galore/{sample}_R1_val_1.fq.gz",
+                trim2="Results/Trim_galore/{sample}_R2_val_2.fq.gz"
+        output:
+                "hisat2/{sample}.sam"
+        params:
+                idx="hisat2/Homo_sapiens.GRCh38v3_hisat2.idx",
+                threads=20
+        shell:
+                "hisat2 -p {params.threads} -x {params.idx}  -1 {input.trim1} -2 {input.trim2} -S {output}"
+
+
+#Conversion of sam to bam; bam indexing; as well as remove the bam to save space
+rule convert_sam2bam:
+        input:
+                "hisat2/{sample}.sam"
+        output:
+                "hisat2/{sample}_hisat2_sorted.bam"
+        shell:
+                "samtools view -@ 20 -Sbh {input} | samtools sort -@ 20 > {output}; samtools index {output}; rm {input}"
+
+#Extracting counts from the alignment files using featureCounts
+rule featurecounts:
+        input:
+                files=expand("hisat2/{sample}_hisat2_sorted.bam", sample=SAMPLES),
+                annot=ref_annot
+        output:
+                "hisat2/hisat2_counts.txt"
+        params:
+                threads=20
+        shell:
+                "featureCounts -T {params.threads} -a {input.annot} -o {output} {input.files}"
+
+
+#Multiqc on the featurecounts directory
+rule multiqc3:
+	input:
+		"hisat2/hisat2_counts.txt"
+	params:
+                dir="hisat2"
+	output:
+		"hisat2/multiqc_report.html"
+
+	shell:
+		"multiqc {params.dir}  -o {params.dir} "
+
+
+
+
+####################################################################################################################################################################
+#                                                PSEUDO-ALIGNMENT USING KALLISTO                                                                                   #
+#                                                                                                                                                                  #
+#####################################################################################################################################################################
+
+#Generating kallisto transcriptome index
+rule Kallisto_index:
+        input:
+                ref=txpme
+        output:
+                "Kallisto/kallisto_index"
+        shell:
+                "kallisto index {input.ref} -i {output}"
+
+
+#Pseudo-alignment using Kallisto
+rule kallisto_alignment:
+        input:
+                trim_read1="Results/Trim_galore/{sample}_R1_val_1.fq.gz",
+                trim_read2="Results/Trim_galore/{sample}_R2_val_2.fq.gz",
+                k_idx="Kallisto/kallisto_index"
+        output:
+                "Kallisto/{sample}/abundance.tsv"
+        params:
+                threads=20,
+                btstraps=100,
+                dir="Kallisto/{sample}"
+        shell:
+                "kallisto quant -t {params.threads} -b {params.btstraps} -i {input.k_idx} -o {params.dir}  {input.trim_read1} {input.trim_read2}"
+

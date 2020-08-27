@@ -1,0 +1,2 @@
+#------------------------------------------------DIRECTED ACYCLIC GRAPH (DAG) DEFINITION FILE------------------------------------------------------------------------#
+snakemake -s Group5_Snakefile --forceall --dag | dot -Tpdf > dag.pdf 

@@ -1,0 +1,16 @@
+######################################################################################################################################################################
+#                                                                      DIFFERENTIAL EXPRESSION ON SNAKEMAKE USING R                                                  #
+#                                                                                                                                                                    #
+######################################################################################################################################################################
+
+
+#Input for the rule is the ouput from hisat alignment as text file and the metadata downloaded at the beginning
+rule Stats:
+    input:
+    "hisat2/hisat2_counts.txt",
+        "practice.dataset.metadata.tsv"
+    output:
+# Output is a html
+    "Differential_Expression.html" 
+    script:
+       "Rscript -e \"rmarkdown::render('Differential_Expression.Rmd')\""
