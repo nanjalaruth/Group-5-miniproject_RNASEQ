@@ -1,0 +1,219 @@
+---
+title: "Relative Abundance Analysis"
+author: "Ritah Nabunje and Stella Nabirye"
+date: "8/14/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Required Packages
+1. DeSeq2
+2. Calibrate
+3. ggplot2
+4. pheatmap  
+
+## Importing Counts into R
+
+```{r}
+#Set working directory
+setwd("E:/Ritah/EANBIT_RT/miniproject/")
+
+#REad the counts file from HISAT2 and featurecounts
+raw.counts <- read.table(file="featurecounts.txt", row.names=1, header=TRUE)
+head(raw.counts)
+```
+
+From the `raw.counts` object, the counts table contains extra columns that are not neccessary for the subsequent analyses. These were removed.
+
+```{r}
+#Remove excess columns to remain with the sample counts only
+raw.counts[,1:5]<- NULL
+head(raw.counts)
+```
+
+## Importing the metadata file into R
+The metadata file contains information on the samples.
+
+```{r}
+#Read metadata file
+meta <- read.table(file="practice.dataset.metadata.tsv", header = TRUE)
+meta
+
+```
+
+The `colnames` of the `raw.counts` object include the source of the sample `.bam` file from which the counts were extracted. With that, the colnames need to be renamed to align with the sample names reflected in the metadata file. However, renaming requires that caution is taken such that the columns of the counts and the rows of the metadata are in the same order. 
+
+```{r}
+colnames(raw.counts) <- meta[,1]
+head(raw.counts)
+
+```
+
+## Coverting counts to matrix 
+This is done as required by the DESeq2 workflow.
+```{r}
+counts <- as.matrix(raw.counts)
+head(counts)
+#class(counts)
+
+```
+ 
+## Analysis with DESeq2 
+
+```{r}
+#construct a DESeqDataSet object
+library("DESeq2")
+dds <- DESeqDataSetFromMatrix(countData = counts,
+                              colData = meta,
+                              design = ~ Condition)
+dds
+```
+### Run the DESeq pipeline
+The DEseq pipeline involves six steps;
+1. Estimating size factors
+1. Estimating dispersions
+1. Gene-wise dispersion estimates
+1. Mean-dispersion relationship
+1. Final dispersion estimates
+1. Fitting model and testing  
+
+The steps are implemented in the `DESeq()` function whose input is the object that was created prior.  
+```{r}
+#Build Results Table
+dds <- DESeq(dds)
+
+```
+
+
+## Ploting Dispersions
+
+```{r}
+#png("dispersions.png", 1000, 1000, pointsize=20)
+plotDispEsts(dds, main="Dispersion plot")
+#dev.off()
+
+```
+
+## Get Differential Expression Results
+
+```{r}
+res <- results(dds)
+res
+summary(res)
+
+```
+To to determine how many adjusted p-values were less than 0.05;  
+
+```{r}
+table(res$padj<0.05)
+```
+
+Ordering by adjusted p-value;  
+
+```{r}
+res_padj <- res[order(res$padj), ]
+res_padj
+```
+
+Merging with normalized count data;  
+
+```{r}
+resdata <- merge(as.data.frame(res_padj), 
+                 as.data.frame(counts(dds, normalized=TRUE)), 
+                 by="row.names", sort=FALSE)
+names(resdata)[1] <- "Gene"
+head(resdata)
+```
+
+Writing results in a csv;  
+
+```{r}
+write.csv(resdata, file="diffexpr-results.csv")
+```
+ 
+###Add heatmap
+
+Examining plot of p-values;  
+
+```{r}
+hist(res_padj$pvalue, breaks=50, col="grey")
+```
+
+## MA plot
+```{r}
+DESeq2::plotMA(dds, ylim=c(-1,1))
+
+```
+
+###
+
+```{r}
+maplot <- function (res_padj, thresh=0.05, 
+                    labelsig=TRUE, textcx=1, ...) 
+  {
+with(res_padj, plot(baseMean, log2FoldChange, 
+               pch=20, cex=.5, log="x", ...))
+with(subset(res_padj, padj<thresh), 
+     points(baseMean, log2FoldChange, 
+            col="red", pch=20, cex=1.5))
+if (labelsig) 
+  {
+require(calibrate)
+with(subset(res_padj, padj<thresh), 
+     textxy(baseMean, log2FoldChange, 
+            labs=Gene, cex=textcx, col=2))
+}
+}
+#png("diffexpr-maplot.png", 1500, 1000, pointsize=20)
+maplot(resdata, main="MA Plot")
+#dev.off()
+```
+
+ 
+## Volcano plot with "significant" genes labeled
+
+```{r}
+volcanoplot <- function (res_adj, lfcthresh=2, 
+                         sigthresh=0.05,main="Volcano Plot", 
+                         legendpos="bottomright", 
+                         labelsig=TRUE, textcx=1, ...) 
+  {
+
+with(res_padj, plot(log2FoldChange, -log10(pvalue), 
+               pch=20, main=main, ...))
+with(subset(res_padj, padj<sigthresh ), 
+     points(log2FoldChange, -log10(pvalue), 
+            pch=20, col="red", ...))
+with(subset(res_padj, abs(log2FoldChange)>lfcthresh), 
+     points(log2FoldChange, -log10(pvalue), 
+            pch=20, col="orange", ...))
+with(subset(res_padj, padj<sigthresh & abs(log2FoldChange)>lfcthresh), 
+     points(log2FoldChange, -log10(pvalue), 
+            pch=20, col="green", ...))
+if (labelsig) 
+  {
+  require(calibrate)
+with(subset(res_adj, padj<sigthresh & abs(log2FoldChange)>lfcthresh), 
+     textxy(log2FoldChange, -log10(pvalue), 
+            labs=Gene, cex=textcx, ...))
+}
+legend(legendpos, xjust=1, yjust=1, 
+       legend=c(paste("FDR<",sigthresh,sep=""), 
+                paste("|LogFC|>",lfcthresh,sep=""), "both"), 
+       pch=20, col=c("red","orange","green"))
+}
+#png("diffexpr-volcanoplot.png", 1200, 1000, pointsize=20)
+volcanoplot(resdata, lfcthresh=1, sigthresh=0.05, 
+            textcx=.8, xlim=c(-2.3, 2))
+#dev.off()
+```
+
+## References
+1. Zhu, A., Ibrahim, J.G., Love, M.I. (2018) Heavy-tailed prior distributions for sequence count data: removing the noise and preserving large differences. Bioinformatics. https://doi.org/10.1093/bioinformatics/bty895
+1. Love, Michael I., Wolfgang Huber, and Simon Anders. 2014. “Moderated estimation of fold change and dispersion for RNA-seq data with DESeq2.” Genome Biology 15 (12):550. http://dx.doi.org/10.1186/s13059-014-0550-8.
+1. Liao, Y., G. K. Smyth, and W. Shi. 2013. “featureCounts: an efficient general purpose program for assigning sequence reads to genomic features.” Bioinformatics, November.
+1. Zhu, Anqi, Joseph G. Ibrahim, and Michael I. Love. 2018. “Heavy-Tailed Prior Distributions for Sequence Count Data: Removing the Noise and Preserving Large Differences.” Bioinformatics. https://doi.org/10.1093/bioinformatics/bty895.
+1. Gautier L, Cope L, Bolstad BM, Irizarry RA (2004). affy—analysis of Affymetrix GeneChip data at the probe level. Bioinformatics, 20(3), 307–315. ISSN 1367-4803,
