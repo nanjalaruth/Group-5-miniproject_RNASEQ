@@ -1,0 +1,13 @@
+{
+	"n_targets": 228048,
+	"n_bootstraps": 100,
+	"n_processed": 13565747,
+	"n_pseudoaligned": 11800966,
+	"n_unique": 3742776,
+	"p_pseudoaligned": 87.0,
+	"p_unique": 27.6,
+	"kallisto_version": "0.46.2",
+	"index_version": 10,
+	"start_time": "Tue Aug 25 08:28:15 2020",
+	"call": "kallisto quant -t 20 -b 100 -i Kallisto/kallisto_index -o Kallisto/sample41 Results/Trim_galore/sample41_R1_val_1.fq.gz Results/Trim_galore/sample41_R2_val_2.fq.gz"
+}
