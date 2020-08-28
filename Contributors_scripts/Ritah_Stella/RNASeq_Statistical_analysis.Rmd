@@ -1,0 +1,246 @@
+# Statistical analysis using DESeq2
+```{r setup, include=FALSE}
+setwd("~/Downloads/deseq")
+library(DESeq2)
+#install.packages("readr")
+library(ggplot2)
+
+```
+
+
+## Reading in featurecountsfile as a matrix
+```{r}
+cts <- read.csv("/home/stella-nabirye/Downloads/deseq/featurecounts.txt",sep="\t",row.names="Geneid",comment.char = "#")
+cts <- cts[,6:11]
+colnames(cts) <- sub("_sorted.bam", "", colnames(cts))
+# Reading in metadata file
+sample_info <- read.csv("/home/stella-nabirye/Downloads/deseq/practice.dataset.metadata.tsv", row.names = 1, sep = "\t")
+head(sample_info)
+all(colnames(cts) %in% rownames(sample_info))
+head(cts)
+
+```
+
+## Constructing the DESeqDataSet
+```{r}
+dds <- DESeqDataSetFromMatrix(countData = cts, colData = sample_info, design = ~ Condition)
+dds
+```
+
+## Pre-filtering
+```{r}
+keep <- rowSums(counts(dds)) >=10
+dds <- dds[keep,]
+dds
+```
+
+# DESeq analysis
+```{r}
+dds <- DESeq(dds)
+res <- results(dds)
+res
+```
+More information on results columns
+```{r}
+mcols(res)$description
+```
+
+## p-values and adjusted p-values
+We can order our results table by the smallest p value
+```{r}
+resOrdered <- res[order(res$pvalue),]
+summary(res)
+```
+
+The number of p-values less than 0.1
+```{r}
+sum(res$padj <0.1, na.rm = TRUE)
+
+```
+The results function automatically performs independent filtering based on the mean of normalized counts for each gene, optimizing the number of genes which will have an adjusted p value below a given FDR cutoff, alpha
+
+```{r}
+res05 <- results(dds, alpha = 0.05)
+summary(res05)
+
+```
+
+```{r}
+sum(res05$padj <0.05, na.rm=TRUE)
+
+```
+
+## Dealing with outliers
+Cook's distance - measure of how much a single sample is influencing the fitted coefficients for a gene. A large value of Cook's distance is intended to indicate an outlier count. Cooks distances are stored as a matrix
+```{r}
+head(assays(dds)[["cooks"]])
+```
+
+The results function automatically flags genes which contain a Cook’s distance above a cutoff for samples which have 3 or more replicates. The p values and adjusted p values for these genes are set to NA. This filtering can be turned off as below
+```{r}
+results(dds, cooksCutoff = FALSE)
+
+```
+
+To see if there are very many outliers
+```{r}
+summary(res)
+```
+
+One can make a boxplot of the Cook’s distances to see if one sample is consistently higher than others (here this is not the case)
+```{r}
+par(mar=c(8,5,2,2))
+boxplot(log10(assays(dds)[["cooks"]]), range=0, las=2)
+```
+
+## Log fold change shrinkage for visualization and ranking
+```{r}
+resultsNames(dds)
+#BiocManager::install("apeglm")
+library(apeglm)
+resLFC <- lfcShrink(dds, coef = "Condition_normal_vs_disease", type = "apeglm")
+```
+
+## Exploring results
+```{r}
+plotMA(res, ylim=c(-2,2))
+plotMA(resLFC, ylim=c(-2,2))
+```
+
+## Plot Counts
+Estimating the count of reads for a single gene across groups
+```{r}
+#Here we specify the gene which had the smallest p value from the results table created
+plotCounts(dds, gene = which.min(res$padj), intgroup = "Condition")
+
+#Plotting different individual genes
+#plotCounts(dds, gene = "ENSG00000284332", intgroup = "Condition")
+par(mfrow=c(2,3))
+plotCounts(dds, gene = "ENSG00000227232", intgroup = "Condition" )
+plotCounts(dds, gene = "ENSG00000278267", intgroup = "Condition" )
+#plotCounts(dds, gene = "ENSG00000243485", intgroup = "Condition")
+```
+
+## Customized plotting using returnData argument
+```{r}
+d <- plotCounts(dds, gene = which.min(res$padj), intgroup = "Condition", returnData = TRUE)
+library(ggplot2)
+ggplot(d, aes(x = Condition, y =count)) + geom_point(position = position_jitter(w=0.1, h=0)) + scale_y_log10(breaks = c(25,100,400))
+```
+
+## Volcano plot
+```{r}
+par(mfrow=c(1,1))
+#making a basic volcano plot
+with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="Volcano plot", xlim=c(-3,3)))
+
+#Add colored points: blue if padj <0.01, red if log2FC>1 and padj<0.05
+with(subset(res, padj<.01), points(log2FoldChange, -log10(pvalue),pch=20,col="blue"))
+with(subset(res,padj<.01 & abs(log2FoldChange)>2), points(log2FoldChange, -log10(pvalue), pch=20, col= "red"))
+```
+
+Exporting results to CSV files
+```{r}
+write.csv(as.data.frame(resOrdered), file = "Condition_normal_vs_disease_results.csv")
+
+#Exporting only the results which pass an adjusted p value threshold can be accomplished with the subset function
+resSig <- subset(resOrdered, padj < 0.1)
+resSig
+```
+
+## Data Transformations and Visualization
+
+**Count data transformations**
+The most obvious choice of transformation is the logarithm. Since count values for a gene can be zero in some conditions (and non-zero in others), some advocate the use of pseudocounts.
+Two approaches; One makes use of the concept of variance stabilizing transformations (VST) (Tibshirani 1988; Huber et al. 2003; Anders and Huber 2010), and the other is the regularized logarithm or rlog, which incorporates a prior on the sample differences (Love, Huber, and Anders 2014). Both transformations produce transformed data on the log2 scale which has been normalized with respect to library size or other normalization factors. 
+The point of these two transformations, the VST and the rlog, is to remove the dependence of the variance on the mean, particularly the high variance of the logarithm of count data when the mean is low.
+
+**Extracting transformed values**
+An argument `blind`, for whether the transformation should be blind to the sample information specified by the design formula is specified as equals `TRUE` if many or majority of the genes don't have large differences in counts. This will re-estimate the dispersions using only an intercept. This setting should be used in order to compare samples in a manner wholly unbiased by the information about experimental groups
+
+```{r}
+vsd <- vst(dds, blind = FALSE)
+rld <- rlog(dds, blind = FALSE)
+head(assay(vsd),3)
+```
+
+**Effects of transformations on the variance**
+Plotting the standard deviation of the transformed data, across samples, against the mean, using the shifted logarithm transformation, the regularized log transformation and the variance stabilizing transformation
+
+```{r}
+ntd <- normTransform(dds)
+#if (!requireNamespace("BiocManager", quietly = TRUE))
+#    install.packages("BiocManager")
+
+#BiocManager::install("vsn")
+library(hexbin)
+library(vsn)
+meanSdPlot(assay(ntd))
+```
+
+```{r}
+meanSdPlot(assay(vsd))
+```
+
+```{r}
+meanSdPlot(assay(rld))
+```
+
+
+**Heatmap of count matrix**
+To explore a count matrix, it is often instructive to look at it as a heatmap
+
+```{r}
+#install.packages("pheatmap")
+library(pheatmap)
+select <- order(rowMeans(counts(dds, normalized = TRUE)), decreasing = TRUE)[1:20]
+df <- as.data.frame(colData(dds)[, "Condition"]) 
+#pheatmap(assay(ntd)[select,], cluster_rows = FALSE, show_rownames=FALSE, cluster_cols=FALSE, annotation_col=df)
+```
+
+```{r}
+#pheatmap(assay(vsd)[select,], cluster_rows=FALSE, show_rownames=FALSE,
+#         cluster_cols=FALSE, annotation_col=df)
+
+```
+
+**Heatmap of the sample-to-sample distances**
+Another use of the transformed data is sample clustering. Here, we apply the dist function to the transpose of the transformed count matrix to get sample-to-sample distances. A heatmap of this distance matrix gives us an overview over similarities and dissimilarities between samples. 
+
+```{r}
+sampleDists <- dist(t(assay(vsd)))
+library(RColorBrewer)
+sampleDistMatrix <- as.matrix(sampleDists)
+rownames(sampleDistMatrix) <- paste(vsd$Condition, sep = "\t")
+colnames(sampleDistMatrix) <- NULL
+colors <- colorRampPalette( rev(brewer.pal(9, "Blues")) )(255)
+pheatmap(sampleDistMatrix,
+         clustering_distance_rows=sampleDists,
+         clustering_distance_cols=sampleDists,
+         col=colors)
+```
+
+
+
+
+## PrincipalComponent plot of the samples
+This type of plot is useful for visualizing the overall effect of experimental covariates and batch effects
+
+```{r}
+plotPCA(vsd, intgroup = "Condition")
+```
+
+
+## Dispersion plot and fitting alternatives
+
+
+```{r}
+plotDispEsts(dds, main= "Dispersion plot")
+```
+
+
+## References
+* http://bioconductor.org/packages/release/bioc/vignettes/DESeq2/inst/doc/DESeq2.html#outlier
+* Zhu, A., Ibrahim, J.G., Love, M.I. (2018) Heavy-tailed prior distributions for sequence count data: removing the noise and preserving large differences. Bioinformatics. 10.1093/bioinformatics/bty895
+* https://lashlock.github.io/compbio/R_presentation.html
+

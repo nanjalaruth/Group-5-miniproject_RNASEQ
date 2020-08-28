@@ -1,3 +1,6 @@
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/nanjalaruth/Group-5-miniproject_RNASEQ/master)
+
+
 # Group-5-miniproject_RNASEQ
 As part of the EANBIT Virtual Residential Training 2020, this group will be working on a mini-project towards an RNA-Seq data processing and gene expression analysis workflow. 
 
