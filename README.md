@@ -28,4 +28,4 @@ As part of the EANBIT Virtual Residential Training 2020, this group will be work
 - Differential Expression Analysis in R using DeSEq
 - Converting the pipeline to R Markdown and Snakemake
 
-## Asummary report of the workflow is documented on the Wiki page
+## A summary report of the workflow is documented on the Wiki page
