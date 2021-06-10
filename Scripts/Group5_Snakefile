@@ -10,10 +10,10 @@ rule download_data:
     output:
         reads=("sample37.fastq.gz",
          "sample39.fastq.gz",
-         "sample40.fastqc.gz",
-         "sample41.fastqc.gz",
-         "sample42.fastqc.gz",
-         "sample38.fastqc.gz")
+         "sample40.fastq.gz",
+         "sample41.fastq.gz",
+         "sample42.fastq.gz",
+         "sample38.fastq.gz")
 
     shell:                                                                                                                                                             
         """
