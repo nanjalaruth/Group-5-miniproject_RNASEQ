@@ -37,17 +37,18 @@ rule download_data:
         
         #The human reference
         wget -c ftp://ftp.ensembl.org/pub/release-100/fasta/homo_sapiens/dna/Homo_sapiens.GRCh38.dna.primary_assembly.fa.gz \
-                                                                    -O hisat2/Homo_sapiens.GRCh38.dna.primary_assembly.fa.gz
+                                                                    -O Homo_sapiens.GRCh38.dna.primary_assembly.fa.gz
         #unzipping the file
-        gunzip  hisat2/Homo_sapiens.GRCh38.dna.primary_assembly.fa.gz 
+        gunzip  Homo_sapiens.GRCh38.dna.primary_assembly.fa.gz 
         
         # The annotation file and unzipping
-        wget -c ftp://ftp.ensembl.org/pub/release-100/gtf/homo_sapiens/Homo_sapiens.GRCh38.100.gtf.gz -O hisat/Homo_sapiens.GRCh38.100.gtf.gz
-        gunzip hisat/Homo_sapiens.GRCh38.100.gtf.gz
+        wget -c ftp://ftp.ensembl.org/pub/release-100/gtf/homo_sapiens/Homo_sapiens.GRCh38.100.gtf.gz -O Homo_sapiens.GRCh38.100.gtf.gz
+        gunzip Homo_sapiens.GRCh38.100.gtf.gz
         
         #The transcriptome and unzipping
-        wget -c ftp://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_34/gencode.v34.transcripts.fa.gz -O Kallisto/gencode.v34.transcripts.fa.gz
-        gunzip Kallisto/gencode.v34.transcripts.fa.gz
+        wget -c ftp://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_34/gencode.v34.transcripts.fa.gz -O gencode.v34.transcripts.fa.gz
+        gunzip gencode.v34.transcripts.fa.gz
+	cd ..
       """
 
 # Defining a global wildcard for samples to be used
