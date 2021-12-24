@@ -28,4 +28,12 @@ As part of the EANBIT Virtual Residential Training 2020, this group will be work
 - Differential Expression Analysis in R using DeSEq
 - Converting the pipeline to R Markdown and Snakemake
 
-## A summary report of the workflow is documented on the Wiki page
+## A summary report of the workflow is documented on the [Wiki page](https://github.com/nanjalaruth/Group-5-miniproject_RNASEQ/wiki) with the following sections;
+1. [RNA Seq Workflow](https://github.com/nanjalaruth/Group-5-miniproject_RNASEQ/wiki/1.-RNA-Seq-Workflow)
+2. [RNA Seq Workflow_Introduction](https://github.com/nanjalaruth/Group-5-miniproject_RNASEQ/wiki/2.-RNA-Seq-Workflow_Introduction)
+3. [RNA Seq Workflow_Bash Script](https://github.com/nanjalaruth/Group-5-miniproject_RNASEQ/wiki/3.-RNA-Seq-Workflow_Bash-Script)
+4. [RNA Seq Workflow_R Markdown Script](https://github.com/nanjalaruth/Group-5-miniproject_RNASEQ/wiki/4.-RNA-Seq-Workflow_R-Markdown-Script). 
+- Link to the output report is [here](https://fredrick-kakembo.github.io/Group-5-miniproject_RNASEQ/Differential-Expression-Analysis-with-DeSEq.html)
+5. [RNA Seq Workflow_Snakemake](https://github.com/nanjalaruth/Group-5-miniproject_RNASEQ/wiki/5.-RNA-Seq-Workflow_Snakemake)
+6. [RNA Seq workflow_Challenges and Lessons](https://github.com/nanjalaruth/Group-5-miniproject_RNASEQ/wiki/6.-RNA-Seq-workflow_Challenges-and-Lessons)
+ 
