@@ -2,7 +2,7 @@
 
 
 # Group-5-miniproject_RNASEQ
-As part of the EANBIT Virtual Residential Training 2020, this group will be working on a mini-project towards developing a snakemake workflow for RNA-Seq data processing and gene expression analysis. 
+As part of the EANBIT Virtual Residential Training 2020, this group will be working on a mini-project towards developing a snakemake workflow for RNA-Seq data processing and gene expression analysis. The detailed documentation is provided [here](https://github.com/nanjalaruth/Group-5-miniproject_RNASEQ/wiki)
 
 ## Group Members
 1. Ruth Nanjala (Group Lead)
